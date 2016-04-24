@@ -1,0 +1,41 @@
+---
+layout: default
+---
+<div class="posts">
+  {% for post in page.posts %}
+  <article class="wiki">
+    <h1 class="post-title">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        {{ post.title }}
+      </a>
+    </h1>
+
+    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+    <!-- Display whole post -->
+        <!-- {{ post.excerpt | markdownify }} -->
+
+    <!-- Display part of post -->
+    <!-- https://blog.omgmog.net/post/adding-support-for-more-tag-to-jekyll-without-plugins/ -->
+    {{ post.content | split:"<!-- more -->" | first | strip_html | truncate:100 }}
+    {% if post.content | size > 100 %}
+        <a href="{{ site.baseurl }}{{ post.url }}"><strong>Read more</strong></a>
+    {% endif %}
+
+  </article>
+  {% endfor %}
+</div>
+
+{% if page.pages > 1 %}
+<div class="pagination">
+  {% if page.nextUrl %}
+    <a class="pagination-item older" href="{{ page.nextUrl | prepend: site.baseurl }}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if page.prevUrl %}
+    <a class="pagination-item newer" href="{{ page.prevUrl | prepend: site.baseurl }}">Newer</a>
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
+</div>
+{% endif %}
