@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      1_notmnist &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">1_notmnist</h1>
+  <time datetime="2016-04-26T00:00:00+09:00" class="post-date">26 Apr 2016</time>
+  <h1 id="deep-learning">Deep Learning</h1>
+
+<h2 id="assignment-1">Assignment 1</h2>
+
+<p>The objective of this assignment is to learn about simple data curation practices, and familiarize you with some of the data we’ll be reusing later.</p>
+
+<p>This notebook uses the <a href="http://yaroslavvb.blogspot.com/2011/09/notmnist-dataset.html">notMNIST</a> dataset to be used with python experiments. This dataset is designed to look like the classic <a href="http://yann.lecun.com/exdb/mnist/">MNIST</a> dataset, while looking a little more like real data: it’s a harder task, and the data is a lot less ‘clean’ than MNIST.</p>
+
+<p><strong>In [2]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># These are all the modules we'll be using later. Make sure you can import them</span>
+<span class="c"># before proceeding further.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">six.moves.urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="n">cPickle</span> <span class="k">as</span> <span class="n">pickle</span>
+
+<span class="c"># Config the matlotlib backend as plotting inline in IPython</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span></code></pre></figure>
+
+<p>First, we’ll download the dataset to our local machine. The data consists of characters rendered in a variety of fonts on a 28x28 image. The labels are limited to ‘A’ through ‘J’ (10 classes). The training set has about 500k and the testset 19000 labelled examples. Given these sizes, it should be possible to train models quickly on any machine.</p>
+
+<p><strong>In [3]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">url</span> <span class="o">=</span> <span class="s">'http://commondatastorage.googleapis.com/books1000/'</span>
+
+<span class="k">def</span> <span class="nf">maybe_download</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">expected_bytes</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+  <span class="s">"""Download a file if not present, and make sure it's the right size."""</span>
+  <span class="k">if</span> <span class="n">force</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="n">statinfo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="n">expected_bytes</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Found and verified'</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span>
+      <span class="s">'Failed to verify '</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">'. Can you get to it with a browser?'</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">filename</span>
+
+<span class="n">train_filename</span> <span class="o">=</span> <span class="n">maybe_download</span><span class="p">(</span><span class="s">'notMNIST_large.tar.gz'</span><span class="p">,</span> <span class="mi">247336696</span><span class="p">)</span>
+<span class="n">test_filename</span> <span class="o">=</span> <span class="n">maybe_download</span><span class="p">(</span><span class="s">'notMNIST_small.tar.gz'</span><span class="p">,</span> <span class="mi">8458043</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Found and verified notMNIST_large.tar.gz
+Found and verified notMNIST_small.tar.gz
+</code></pre>
+</div>
+
+<p>Extract the dataset from the compressed .tar.gz file.
+This should give you a set of directories, labelled A through J.</p>
+
+<p><strong>In [4]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">maybe_extract</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+  <span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># remove .tar.gz</span>
+  <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+    <span class="c"># You may override by setting force=True.</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">s already present - Skipping extraction of </span><span class="si">%</span><span class="s">s.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'Extracting data for </span><span class="si">%</span><span class="s">s. This may take a while. Please wait.'</span> <span class="o">%</span> <span class="n">root</span><span class="p">)</span>
+    <span class="n">tar</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">()</span>
+    <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="n">data_folders</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">d</span><span class="p">))]</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_folders</span><span class="p">)</span> <span class="o">!=</span> <span class="n">num_classes</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span>
+      <span class="s">'Expected </span><span class="si">%</span><span class="s">d folders, one per class. Found </span><span class="si">%</span><span class="s">d instead.'</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">num_classes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_folders</span><span class="p">)))</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">data_folders</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">data_folders</span>
+  
+<span class="n">train_folders</span> <span class="o">=</span> <span class="n">maybe_extract</span><span class="p">(</span><span class="n">train_filename</span><span class="p">)</span>
+<span class="n">test_folders</span> <span class="o">=</span> <span class="n">maybe_extract</span><span class="p">(</span><span class="n">test_filename</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>notMNIST_large already present - Skipping extraction of notMNIST_large.tar.gz.
+['notMNIST_large/A', 'notMNIST_large/B', 'notMNIST_large/C', 'notMNIST_large/D', 'notMNIST_large/E', 'notMNIST_large/F', 'notMNIST_large/G', 'notMNIST_large/H', 'notMNIST_large/I', 'notMNIST_large/J']
+notMNIST_small already present - Skipping extraction of notMNIST_small.tar.gz.
+['notMNIST_small/A', 'notMNIST_small/B', 'notMNIST_small/C', 'notMNIST_small/D', 'notMNIST_small/E', 'notMNIST_small/F', 'notMNIST_small/G', 'notMNIST_small/H', 'notMNIST_small/I', 'notMNIST_small/J']
+</code></pre>
+</div>
+
+<hr />
+<p>Problem 1
+———</p>
+
+<p>Let’s take a peek at some of the data to make sure it looks sensible. Each exemplar should be an image of a character A through J rendered in a different font. Display a sample of the images that we just downloaded. Hint: you can use the package IPython.display.</p>
+
+<hr />
+
+<p><strong>In [5]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test_folders</span><span class="p">:</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="s">"/"</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span></code></pre></figure>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_0.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_1.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_2.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_3.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_4.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_5.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_6.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_7.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_8.png" alt="png" /></p>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_7_9.png" alt="png" /></p>
+
+<p>Now let’s load the data in a more manageable format. Since, depending on your computer setup you might not be able to fit it all in memory, we’ll load each class into a separate dataset, store them on disk and curate them independently. Later we’ll merge them into a single dataset of manageable size.</p>
+
+<p>We’ll convert the entire dataset into a 3D array (image index, x, y) of floating point values, normalized to have approximately zero mean and standard deviation ~0.5 to make training easier down the road.</p>
+
+<p>A few images might not be readable, we’ll just skip them.</p>
+
+<p><strong>In [6]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">image_size</span> <span class="o">=</span> <span class="mi">28</span>  <span class="c"># Pixel width and height.</span>
+<span class="n">pixel_depth</span> <span class="o">=</span> <span class="mf">255.0</span>  <span class="c"># Number of levels per pixel.</span>
+
+<span class="k">def</span> <span class="nf">load_letter</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">min_num_images</span><span class="p">):</span>
+  <span class="s">"""Load the data for a single letter label."""</span>
+  <span class="n">image_files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+  <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">image_files</span><span class="p">),</span> <span class="n">image_size</span><span class="p">,</span> <span class="n">image_size</span><span class="p">),</span>
+                         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+  <span class="n">image_index</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+    <span class="n">image_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">image_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">ndimage</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_file</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> 
+                    <span class="n">pixel_depth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">pixel_depth</span>
+      <span class="k">if</span> <span class="n">image_data</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">image_size</span><span class="p">,</span> <span class="n">image_size</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Unexpected image shape: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">image_data</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+      <span class="n">dataset</span><span class="p">[</span><span class="n">image_index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">image_data</span>
+      <span class="n">image_index</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">except</span> <span class="nb">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">'Could not read:'</span><span class="p">,</span> <span class="n">image_file</span><span class="p">,</span> <span class="s">':'</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="s">'- it</span><span class="se">\'</span><span class="s">s ok, skipping.'</span><span class="p">)</span>
+    
+  <span class="n">num_images</span> <span class="o">=</span> <span class="n">image_index</span>
+  <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_images</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+  <span class="k">if</span> <span class="n">num_images</span> <span class="o">&lt;</span> <span class="n">min_num_images</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Many fewer images than expected: </span><span class="si">%</span><span class="s">d &lt; </span><span class="si">%</span><span class="s">d'</span> <span class="o">%</span>
+                    <span class="p">(</span><span class="n">num_images</span><span class="p">,</span> <span class="n">min_num_images</span><span class="p">))</span>
+    
+  <span class="k">print</span><span class="p">(</span><span class="s">'Full dataset tensor:'</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">'Mean:'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">'Standard deviation:'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">dataset</span>
+        
+<span class="k">def</span> <span class="nf">maybe_pickle</span><span class="p">(</span><span class="n">data_folders</span><span class="p">,</span> <span class="n">min_num_images_per_class</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+  <span class="n">dataset_names</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="n">data_folders</span><span class="p">:</span>
+    <span class="n">set_filename</span> <span class="o">=</span> <span class="n">folder</span> <span class="o">+</span> <span class="s">'.pickle'</span>
+    <span class="n">dataset_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">set_filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">set_filename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+      <span class="c"># You may override by setting force=True.</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">'</span><span class="si">%</span><span class="s">s already present - Skipping pickling.'</span> <span class="o">%</span> <span class="n">set_filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">'Pickling </span><span class="si">%</span><span class="s">s.'</span> <span class="o">%</span> <span class="n">set_filename</span><span class="p">)</span>
+      <span class="n">dataset</span> <span class="o">=</span> <span class="n">load_letter</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">min_num_images_per_class</span><span class="p">)</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">set_filename</span><span class="p">,</span> <span class="s">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+          <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+      <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Unable to save data to'</span><span class="p">,</span> <span class="n">set_filename</span><span class="p">,</span> <span class="s">':'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">dataset_names</span>
+
+<span class="n">train_datasets</span> <span class="o">=</span> <span class="n">maybe_pickle</span><span class="p">(</span><span class="n">train_folders</span><span class="p">,</span> <span class="mi">45000</span><span class="p">)</span>
+<span class="n">test_datasets</span> <span class="o">=</span> <span class="n">maybe_pickle</span><span class="p">(</span><span class="n">test_folders</span><span class="p">,</span> <span class="mi">1800</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>notMNIST_large/A.pickle already present - Skipping pickling.
+notMNIST_large/B.pickle already present - Skipping pickling.
+notMNIST_large/C.pickle already present - Skipping pickling.
+notMNIST_large/D.pickle already present - Skipping pickling.
+notMNIST_large/E.pickle already present - Skipping pickling.
+notMNIST_large/F.pickle already present - Skipping pickling.
+notMNIST_large/G.pickle already present - Skipping pickling.
+notMNIST_large/H.pickle already present - Skipping pickling.
+notMNIST_large/I.pickle already present - Skipping pickling.
+notMNIST_large/J.pickle already present - Skipping pickling.
+notMNIST_small/A.pickle already present - Skipping pickling.
+notMNIST_small/B.pickle already present - Skipping pickling.
+notMNIST_small/C.pickle already present - Skipping pickling.
+notMNIST_small/D.pickle already present - Skipping pickling.
+notMNIST_small/E.pickle already present - Skipping pickling.
+notMNIST_small/F.pickle already present - Skipping pickling.
+notMNIST_small/G.pickle already present - Skipping pickling.
+notMNIST_small/H.pickle already present - Skipping pickling.
+notMNIST_small/I.pickle already present - Skipping pickling.
+notMNIST_small/J.pickle already present - Skipping pickling.
+</code></pre>
+</div>
+
+<hr />
+<p>Problem 2
+———</p>
+
+<p>Let’s verify that the data still looks good. Displaying a sample of the labels and images from the ndarray. Hint: you can use matplotlib.pyplot.</p>
+
+<hr />
+
+<p><strong>In [7]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">sample_lable</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">sample_image</span> <span class="o">=</span> <span class="mi">1234567</span>
+
+<span class="k">def</span> <span class="nf">show_image_from_dataset</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">lable</span><span class="p">,</span> <span class="n">image_index</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">datasets</span><span class="p">[</span><span class="n">lable</span><span class="p">],</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">image_index</span> <span class="o">%</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Exception: '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">test_datasets</span><span class="p">[</span><span class="n">sample_lable</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_folders</span><span class="p">[</span><span class="n">sample_lable</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">show_image_from_dataset</span><span class="p">(</span><span class="n">test_datasets</span><span class="p">,</span> <span class="n">sample_lable</span><span class="p">,</span> <span class="n">sample_image</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>notMNIST_small/F.pickle
+</code></pre>
+</div>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_11_1.png" alt="png" /></p>
+
+<hr />
+<p>Problem 3
+———
+Another check: we expect the data to be balanced across classes. Verify that.</p>
+
+<hr />
+
+<p>According to this link:
+http://machinelearningmastery.com/tactics-to-combat-imbalanced-classes-in-your-machine-learning-dataset/
+The classes have to be balanced, meaning that they should be represented equally. Let’s check the number of images by class.</p>
+
+<p><strong>In [8]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># train_datasets = maybe_pickle(train_folders, 45000)</span>
+<span class="c"># test_datasets = maybe_pickle(test_folders, 1800)</span>
+
+<span class="k">def</span> <span class="nf">num_images</span><span class="p">(</span><span class="n">datasets</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="n">lable</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset</span><span class="p">)[</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">lable_datas</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">lable</span> <span class="o">+</span> <span class="s">' has '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lable_datas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s">' images.'</span><span class="p">)</span>
+    <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Exception: '</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'train datasets: '</span><span class="p">)</span>
+<span class="n">num_images</span><span class="p">(</span><span class="n">train_datasets</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'test datasets: '</span><span class="p">)</span>
+<span class="n">num_images</span><span class="p">(</span><span class="n">test_datasets</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>train datasets: 
+A has 52909 images.
+B has 52911 images.
+C has 52912 images.
+D has 52911 images.
+E has 52912 images.
+F has 52912 images.
+G has 52912 images.
+H has 52912 images.
+I has 52912 images.
+J has 52911 images.
+test datasets: 
+A has 1872 images.
+B has 1873 images.
+C has 1873 images.
+D has 1873 images.
+E has 1873 images.
+F has 1872 images.
+G has 1872 images.
+H has 1872 images.
+I has 1872 images.
+J has 1872 images.
+</code></pre>
+</div>
+
+<p>Merge and prune the training data as needed. Depending on your computer setup, you might not be able to fit it all in memory, and you can tune <code class="highlighter-rouge">train_size</code> as needed. The labels will be stored into a separate array of integers 0 through 9.</p>
+
+<p>Also create a validation dataset for hyperparameter tuning.</p>
+
+<p><strong>In [9]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">make_arrays</span><span class="p">(</span><span class="n">nb_rows</span><span class="p">,</span> <span class="n">img_size</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">nb_rows</span><span class="p">:</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="n">nb_rows</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">nb_rows</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">dataset</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+  <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">labels</span>
+
+<span class="k">def</span> <span class="nf">merge_datasets</span><span class="p">(</span><span class="n">pickle_files</span><span class="p">,</span> <span class="n">train_size</span><span class="p">,</span> <span class="n">valid_size</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pickle_files</span><span class="p">)</span>
+  <span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span> <span class="o">=</span> <span class="n">make_arrays</span><span class="p">(</span><span class="n">valid_size</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span>
+  <span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span> <span class="o">=</span> <span class="n">make_arrays</span><span class="p">(</span><span class="n">train_size</span><span class="p">,</span> <span class="n">image_size</span><span class="p">)</span>
+  <span class="n">vsize_per_class</span> <span class="o">=</span> <span class="n">valid_size</span> <span class="o">//</span> <span class="n">num_classes</span>
+  <span class="n">tsize_per_class</span> <span class="o">=</span> <span class="n">train_size</span> <span class="o">//</span> <span class="n">num_classes</span>
+    
+  <span class="n">start_v</span><span class="p">,</span> <span class="n">start_t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+  <span class="n">end_v</span><span class="p">,</span> <span class="n">end_t</span> <span class="o">=</span> <span class="n">vsize_per_class</span><span class="p">,</span> <span class="n">tsize_per_class</span>
+  <span class="n">end_l</span> <span class="o">=</span> <span class="n">vsize_per_class</span><span class="o">+</span><span class="n">tsize_per_class</span>
+  <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">pickle_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pickle_files</span><span class="p">):</span>       
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">letter_set</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="c"># let's shuffle the letters to have random validation and training set</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">letter_set</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid_dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+          <span class="n">valid_letter</span> <span class="o">=</span> <span class="n">letter_set</span><span class="p">[:</span><span class="n">vsize_per_class</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+          <span class="n">valid_dataset</span><span class="p">[</span><span class="n">start_v</span><span class="p">:</span><span class="n">end_v</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">valid_letter</span>
+          <span class="n">valid_labels</span><span class="p">[</span><span class="n">start_v</span><span class="p">:</span><span class="n">end_v</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+          <span class="n">start_v</span> <span class="o">+=</span> <span class="n">vsize_per_class</span>
+          <span class="n">end_v</span> <span class="o">+=</span> <span class="n">vsize_per_class</span>
+                    
+        <span class="n">train_letter</span> <span class="o">=</span> <span class="n">letter_set</span><span class="p">[</span><span class="n">vsize_per_class</span><span class="p">:</span><span class="n">end_l</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">train_dataset</span><span class="p">[</span><span class="n">start_t</span><span class="p">:</span><span class="n">end_t</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">train_letter</span>
+        <span class="n">train_labels</span><span class="p">[</span><span class="n">start_t</span><span class="p">:</span><span class="n">end_t</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="n">start_t</span> <span class="o">+=</span> <span class="n">tsize_per_class</span>
+        <span class="n">end_t</span> <span class="o">+=</span> <span class="n">tsize_per_class</span>
+    <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">'Unable to process data from'</span><span class="p">,</span> <span class="n">pickle_file</span><span class="p">,</span> <span class="s">':'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+      <span class="k">raise</span>
+    
+  <span class="k">return</span> <span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span>
+            
+            
+<span class="n">train_size</span> <span class="o">=</span> <span class="mi">200000</span>
+<span class="n">valid_size</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">test_size</span> <span class="o">=</span> <span class="mi">10000</span>
+
+<span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span> <span class="o">=</span> <span class="n">merge_datasets</span><span class="p">(</span>
+  <span class="n">train_datasets</span><span class="p">,</span> <span class="n">train_size</span><span class="p">,</span> <span class="n">valid_size</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">test_dataset</span><span class="p">,</span> <span class="n">test_labels</span> <span class="o">=</span> <span class="n">merge_datasets</span><span class="p">(</span><span class="n">test_datasets</span><span class="p">,</span> <span class="n">test_size</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'Training:'</span><span class="p">,</span> <span class="n">train_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">train_labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Validation:'</span><span class="p">,</span> <span class="n">valid_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">valid_labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Testing:'</span><span class="p">,</span> <span class="n">test_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">test_labels</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Training: (200000, 28, 28) (200000,)
+Validation: (10000, 28, 28) (10000,)
+Testing: (10000, 28, 28) (10000,)
+</code></pre>
+</div>
+
+<p>Next, we’ll randomize the data. It’s important to have the labels well shuffled for the training and test distributions to match.</p>
+
+<p><strong>In [10]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">randomize</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+  <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">shuffled_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">permutation</span><span class="p">,:,:]</span>
+  <span class="n">shuffled_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">permutation</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">shuffled_dataset</span><span class="p">,</span> <span class="n">shuffled_labels</span>
+<span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span> <span class="o">=</span> <span class="n">randomize</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
+<span class="n">test_dataset</span><span class="p">,</span> <span class="n">test_labels</span> <span class="o">=</span> <span class="n">randomize</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+<span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span> <span class="o">=</span> <span class="n">randomize</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span><span class="p">)</span></code></pre></figure>
+
+<hr />
+<p>Problem 4
+———
+Convince yourself that the data is still good after shuffling!</p>
+
+<hr />
+
+<p><strong>In [11]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">show_dataset_image</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+<span class="c">#     print(len(items))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">'off'</span><span class="p">)</span>
+<span class="c">#         plt.title(pretty_labels[labels[item]])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        
+
+<span class="k">print</span><span class="p">(</span><span class="s">'train dataset: '</span><span class="p">)</span>
+<span class="c"># plt.suptitle(''.join(test_folders[sample_lable])[-1])</span>
+<span class="n">show_dataset_image</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'test dataset: '</span><span class="p">)</span>
+<span class="c"># plt.suptitle(''.join(test_folders[sample_lable])[-1])</span>
+<span class="n">show_dataset_image</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s">'valid dataset: '</span><span class="p">)</span>
+<span class="c"># plt.suptitle(''.join(test_folders[sample_lable])[-1])</span>
+<span class="n">show_dataset_image</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">valid_labels</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>train dataset: 
+</code></pre>
+</div>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_20_1.png" alt="png" /></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>test dataset: 
+</code></pre>
+</div>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_20_3.png" alt="png" /></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>valid dataset: 
+</code></pre>
+</div>
+
+<p><img src="/img/2016-04-26-1_notmnist_files/2016-04-26-1_notmnist_20_5.png" alt="png" /></p>
+
+<p>Finally, let’s save the data for later reuse:</p>
+
+<p><strong>In [12]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">pickle_file</span> <span class="o">=</span> <span class="s">'notMNIST.pickle'</span>
+
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">,</span> <span class="s">'wb'</span><span class="p">)</span>
+  <span class="n">save</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'train_dataset'</span><span class="p">:</span> <span class="n">train_dataset</span><span class="p">,</span>
+    <span class="s">'train_labels'</span><span class="p">:</span> <span class="n">train_labels</span><span class="p">,</span>
+    <span class="s">'valid_dataset'</span><span class="p">:</span> <span class="n">valid_dataset</span><span class="p">,</span>
+    <span class="s">'valid_labels'</span><span class="p">:</span> <span class="n">valid_labels</span><span class="p">,</span>
+    <span class="s">'test_dataset'</span><span class="p">:</span> <span class="n">test_dataset</span><span class="p">,</span>
+    <span class="s">'test_labels'</span><span class="p">:</span> <span class="n">test_labels</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+  <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+  <span class="k">print</span><span class="p">(</span><span class="s">'Unable to save data to'</span><span class="p">,</span> <span class="n">pickle_file</span><span class="p">,</span> <span class="s">':'</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+  <span class="k">raise</span></code></pre></figure>
+
+<p><strong>In [13]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">statinfo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">pickle_file</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Compressed pickle size:'</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Compressed pickle size: 690800441
+</code></pre>
+</div>
+
+<hr />
+<p>Problem 5
+———</p>
+
+<p>By construction, this dataset might contain a lot of overlapping samples, including training data that’s also contained in the validation and test set! Overlap between training and test can skew the results if you expect to use your model in an environment where there is never an overlap, but are actually ok if you expect to see training samples recur when you use it.
+Measure how much overlap there is between training, validation and test samples.</p>
+
+<p>Optional questions:
+- What about near duplicates between datasets? (images that are almost identical)
+- Create a sanitized validation and test set, and compare your accuracy on those in subsequent assignments.
+—</p>
+
+<p><strong>In [14]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">dups</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">train_data</span> <span class="ow">in</span> <span class="n">train_dataset</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">test_data</span> <span class="ow">in</span> <span class="n">test_dataset</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">train_data</span> <span class="o">==</span> <span class="n">test_data</span><span class="p">)</span><span class="o">.</span><span class="nb">all</span><span class="p">():</span>
+            <span class="n">dups</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Overlap count: '</span><span class="p">,</span> <span class="n">dups</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>---------------------------------------------------------------------------
+
+KeyboardInterrupt                         Traceback (most recent call last)
+
+&lt;ipython-input-14-cf541de072ef&gt; in &lt;module&gt;()
+      2 for train_data in train_dataset:
+      3     for test_data in test_dataset:
+----&gt; 4         if (train_data == test_data).all():
+      5             dups += 1
+      6 print('Overlap count: ', dups)
+
+
+/usr/lib/python2.7/dist-packages/numpy/core/_methods.pyc in _all(a, axis, dtype, out, keepdims)
+     35 def _all(a, axis=None, dtype=None, out=None, keepdims=False):
+     36     return um.logical_and.reduce(a, axis=axis, dtype=dtype, out=out,
+---&gt; 37                                  keepdims=keepdims)
+     38 
+     39 def _count_reduce_items(arr, axis):
+
+
+KeyboardInterrupt: 
+</code></pre>
+</div>
+
+<hr />
+<p>Problem 6
+———</p>
+
+<p>Let’s get an idea of what an off-the-shelf classifier can give you on this data. It’s always good to check that there is something to learn, and that it’s a problem that is not so trivial that a canned solution solves it.</p>
+
+<p>Train a simple model on this data using 50, 100, 1000 and 5000 training samples. Hint: you can use the LogisticRegression model from sklearn.linear_model.</p>
+
+<p>Optional question: train an off-the-shelf model on all the data!</p>
+
+<hr />
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/Test-IPython-on-blog/">
+          Test-IPython-on-blog
+          <small><time datetime="2016-04-25T00:00:00+09:00">25 Apr 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/hello-my-wiki/">
+          Hello My Wiki
+          <small><time datetime="2016-04-24T00:00:00+09:00">24 Apr 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-04-26T14:12:51+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>
