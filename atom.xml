@@ -4,7 +4,7 @@
  <title>lekaha's blog</title>
  <link href="http://lekaha.github.io/atom.xml" rel="self"/>
  <link href="http://lekaha.github.io/"/>
- <updated>2016-05-16T23:49:22+09:00</updated>
+ <updated>2016-05-17T00:23:53+09:00</updated>
  <id>http://lekaha.github.io</id>
  <author>
    <name>John Lu</name>
@@ -70,6 +70,33 @@
 &lt;p&gt;I usually use it as notebook to note something I learn or note something I experiment.&lt;/p&gt;
 
 &lt;h2 id=&quot;why-i-put-them-together&quot;&gt;Why I put them together&lt;/h2&gt;
+
+&lt;p&gt;Since I would like to start to write blogs as to note what I am learning and have used IPython notebook as my note while I pratice Machine learning with Python. So I think they can be put together.&lt;/p&gt;
+
+&lt;h2 id=&quot;lets-start&quot;&gt;Let’s start&lt;/h2&gt;
+
+&lt;p&gt;I am not going to describe how to put blogs on Github.io but here I will use it as my blogs endpoint.&lt;/p&gt;
+
+&lt;h3 id=&quot;repository&quot;&gt;Repository&lt;/h3&gt;
+
+&lt;p&gt;I put Jekyll project on Bitbucket rather than directly put the project on Github. Since Github limited what packages you can use in Jekyll I can not convert IPython notebook to blog with customized package.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Github: your_name.github.io&lt;/li&gt;
+  &lt;li&gt;Bitbucket: your_name.site&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;covert-your-ipython-notebooks-to-blog&quot;&gt;Covert your IPython notebooks to blog&lt;/h3&gt;
+
+&lt;h3 id=&quot;build-script&quot;&gt;Build script&lt;/h3&gt;
+
+&lt;h3 id=&quot;push-to-repositories&quot;&gt;Push to repositories&lt;/h3&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 </content>
  </entry>
