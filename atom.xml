@@ -4,7 +4,7 @@
  <title>lekaha's blog</title>
  <link href="http://lekaha.github.io/atom.xml" rel="self"/>
  <link href="http://lekaha.github.io/"/>
- <updated>2016-05-17T00:23:53+09:00</updated>
+ <updated>2016-05-17T00:29:59+09:00</updated>
  <id>http://lekaha.github.io</id>
  <author>
    <name>John Lu</name>
@@ -39,6 +39,12 @@
   &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/122148/firebase-tutorial-real-time-chat&quot;&gt;Firebase Tutorial: Real-time Chat&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.firebase.com/docs/ios/guide/user-auth.html&quot;&gt;Firebase User Authentication&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://www.appcoda.com/firebase/&quot;&gt;Introduction to Firebase: Building a Simple Social App in Swift&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;swift-coding-style-guide&quot;&gt;Swift Coding Style Guide&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/raywenderlich/swift-style-guide&quot;&gt;The Official raywenderlich.com Swift Style Guide&lt;/a&gt;:&lt;/li&gt;
 &lt;/ul&gt;
 
 </content>
