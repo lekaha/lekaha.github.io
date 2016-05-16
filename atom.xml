@@ -4,13 +4,75 @@
  <title>lekaha's blog</title>
  <link href="http://lekaha.github.io/atom.xml" rel="self"/>
  <link href="http://lekaha.github.io/"/>
- <updated>2016-04-26T14:58:15+09:00</updated>
+ <updated>2016-05-16T23:49:22+09:00</updated>
  <id>http://lekaha.github.io</id>
  <author>
    <name>John Lu</name>
    <email>lekaha@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>About Swift resources</title>
+   <link href="http://lekaha.github.io/blog/about-swift-sources/"/>
+   <updated>2016-05-16T00:00:00+09:00</updated>
+   <id>http://lekaha.github.io/blog/about-swift-sources</id>
+   <content type="html">&lt;h2 id=&quot;swift-tutorial&quot;&gt;Swift tutorial&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/115253/swift-2-tutorial-a-quick-start&quot;&gt;Swift 2 Tutorial: A Quick Start&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/115279/swift-2-tutorial-part-2-a-simple-ios-app&quot;&gt;Swift 2 Tutorial Part 2: A Simple iOS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/115300/swift-2-tutorial-part-3-tuples-protocols-delegates-and-table-views&quot;&gt;Swift 2 Tutorial Part 3: Tuples, Protocols, Delegates, and Table Views&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;apple-official-documents&quot;&gt;Apple official documents&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://itunes.apple.com/us/book/swift-programming-language/id881256329?mt=11&amp;amp;uo=8&amp;amp;at=11ld4k&amp;amp;uo=8&amp;amp;at=11ld4k&amp;amp;uo=8&amp;amp;at=11ld4k&quot;&gt;Apple’s Swift Programming book&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://itunes.apple.com/us/book/swift-programming-language/id881256329?mt=11&amp;amp;uo=8&amp;amp;at=11ld4k&amp;amp;uo=8&amp;amp;at=11ld4k&amp;amp;uo=8&amp;amp;at=11ld4k&amp;amp;uo=8&amp;amp;at=11ld4k&quot;&gt;Swift reference guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;practice-with-swift-tutorial&quot;&gt;Practice with Swift tutorial&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/109706/firebase-tutorial-getting-started&quot;&gt;Firebase Tutorial: Getting Started&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.raywenderlich.com/122148/firebase-tutorial-real-time-chat&quot;&gt;Firebase Tutorial: Real-time Chat&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.firebase.com/docs/ios/guide/user-auth.html&quot;&gt;Firebase User Authentication&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.appcoda.com/firebase/&quot;&gt;Introduction to Firebase: Building a Simple Social App in Swift&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>How to build your blog with Jekyll and IPython</title>
+   <link href="http://lekaha.github.io/blog/how-to-build-your-blog-with-jekyll-and-ipython/"/>
+   <updated>2016-04-26T00:00:00+09:00</updated>
+   <id>http://lekaha.github.io/blog/how-to-build-your-blog-with-jekyll-and-ipython</id>
+   <content type="html">&lt;h2 id=&quot;what-is-jekyll&quot;&gt;What is Jekyll&lt;/h2&gt;
+
+&lt;p&gt;I used the introduction of Jekyll as the first post. If you’re interested you can talk look the &lt;a href=&quot;/blog/hello-my-blog/&quot;&gt;post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-ipython&quot;&gt;What is IPython&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;IPython provides a rich architecture for interactive computing with:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;A powerful interactive shell.&lt;/li&gt;
+    &lt;li&gt;A kernel for Jupyter.&lt;/li&gt;
+    &lt;li&gt;Support for interactive data visualization and use of GUI toolkits.&lt;/li&gt;
+    &lt;li&gt;Flexible, embeddable interpreters to load into your own projects.&lt;/li&gt;
+    &lt;li&gt;Easy to use, high performance tools for parallel computing.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I usually use it as notebook to note something I learn or note something I experiment.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-i-put-them-together&quot;&gt;Why I put them together&lt;/h2&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>1_notmnist</title>
@@ -726,15 +788,12 @@ rm -rf repo.git
 
 &lt;p&gt;Inline code is available with the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;code&amp;gt;&lt;/code&gt; element. Snippets of multiple lines of code are supported through Pygments. Longer lines will automatically scroll horizontally when needed.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Example can be run directly in your JavaScript console
-&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// Example can be run directly in your JavaScript console&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// Create a function that takes two arguments and returns the sum of those arguments
-&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Create a function that takes two arguments and returns the sum of those arguments&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;return a + b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// Call the function
-&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Call the function&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;// &amp;gt; 8&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -747,15 +806,12 @@ rm -rf repo.git
 5
 6
 7
-8&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c1&quot;&gt;// Example can be run directly in your JavaScript console
-&lt;/span&gt;
+8&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c1&quot;&gt;// Example can be run directly in your JavaScript console&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// Create a function that takes two arguments and returns the sum of those arguments
-&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Create a function that takes two arguments and returns the sum of those arguments&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;return a + b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// Call the function
-&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Call the function&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;adder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;// &amp;gt; 8&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
