@@ -41,7 +41,7 @@
       <main>
         <article class="post">
   <h1 class="post-title">How to build your blog with Jekyll and IPython</h1>
-  <time datetime="2016-04-26T00:00:00+09:00" class="post-date">26 Apr 2016</time>
+  <time datetime="2016-04-25T00:00:00+09:00" class="post-date">25 Apr 2016</time>
   <h2 id="what-is-jekyll">What is Jekyll</h2>
 
 <p>I used the introduction of Jekyll as the first post. If you’re interested you can talk look the <a href="/blog/hello-my-blog/">post</a>.</p>
@@ -72,23 +72,74 @@
 
 <h3 id="repository">Repository</h3>
 
-<p>I put Jekyll project on Bitbucket rather than directly put the project on Github. Since Github limited what packages you can use in Jekyll I can not convert IPython notebook to blog with customized package.</p>
+<p>I put Jekyll project on Bitbucket rather than directly put the project on Github. Since Github limited packages in Jekyll I can not convert IPython notebook to blog with customized package. So I decided put the static web site only in Github and put Jekyll project to a private git repository, e.g. Bitbucket.</p>
+
+<p>Here is my case:
+- Github: your_name.github.io
+- Bitbucket: your_name.site</p>
+
+<h3 id="covert-ipython-notebooks-to-blog">Covert IPython notebooks to blog</h3>
+
+<p>IPython’s built-in Markdown conversion</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ipython nbconvert --config jekyll-post notebook.ipynb
+</code></pre>
+</div>
+
+<p>To use this conversion you have to put two files in the same path.</p>
 
 <ul>
-  <li>Github: your_name.github.io</li>
-  <li>Bitbucket: your_name.site</li>
+  <li>Script:</li>
 </ul>
 
-<h3 id="covert-your-ipython-notebooks-to-blog">Covert your IPython notebooks to blog</h3>
+<noscript><pre>400: Invalid request
+</pre></noscript>
+<script src="https://gist.github.com/1c7e5e849d1ab5fd72fda44821296fda.js?file=jekyll-post.py"> </script>
+
+<p>Note:</p>
+
+<p>Image files will be put at the <code class="highlighter-rouge">img</code> folder. The part of code in the script to describe below where the images will be put.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def path2url(path):
+    """Turn a file path into a URL"""
+    parts = path.split(os.path.sep)
+    print os.path.sep, parts
+    return '/img/' + '/'.join(quote(part) for part in parts)
+
+</code></pre>
+</div>
+
+<ul>
+  <li>Template:</li>
+</ul>
+
+<noscript><pre>400: Invalid request
+</pre></noscript>
+<script src="https://gist.github.com/97987b39c94fd7d8587400a0a38da41e.js?file=jekyll-post.tpl"> </script>
 
 <h3 id="build-script">Build script</h3>
 
+<ul>
+  <li>Install a make-like build utility for Ruby - <a href="https://github.com/ruby/rake">Rake</a></li>
+  <li>Then, put your nodebooks (.ipynb) into <code class="highlighter-rouge">notebooks</code> folder.</li>
+  <li>The build script will covert all of notebooks to markdown file. (<code class="highlighter-rouge">.md</code>)</li>
+  <li>Since notebooks conversion would generate image files in the same path with notebooks we should move images to <code class="highlighter-rouge">img</code> folder after coverted.</li>
+  <li>Move all markdown files to <code class="highlighter-rouge">_post</code> folder for building by Jekyll.</li>
+  <li>Finally, copy all output that are the web site files to <code class="highlighter-rouge">GH_PAGES_DIR</code> in the upper folder.</li>
+</ul>
+
+<noscript><pre>400: Invalid request
+</pre></noscript>
+<script src="https://gist.github.com/1b6db0d7e5a667c64d4e5e212390793f.js?file=RakeFile.rb"> </script>
+
 <h3 id="push-to-repositories">Push to repositories</h3>
+
+<p>Remember to commit and push your change and modified to both repositories.</p>
 
 <h2 id="references">References</h2>
 
 <ul>
-  <li></li>
+  <li>http://mcwitt.github.io/2015/04/29/jekyll_blogging_with_ipython3/</li>
 </ul>
 
 
@@ -143,7 +194,7 @@
 
       <footer class="footer">
         <small>
-          &copy; <time datetime="2016-05-17T00:29:59+09:00">2016</time>. All rights reserved.
+          &copy; <time datetime="2016-05-18T01:12:39+09:00">2016</time>. All rights reserved.
         </small>
       </footer>
     </div>
