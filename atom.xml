@@ -4,13 +4,294 @@
  <title>lekaha's blog</title>
  <link href="http://lekaha.github.io/atom.xml" rel="self"/>
  <link href="http://lekaha.github.io/"/>
- <updated>2016-05-18T01:12:39+09:00</updated>
+ <updated>2016-05-20T07:48:57+09:00</updated>
  <id>http://lekaha.github.io</id>
  <author>
    <name>John Lu</name>
    <email>lekaha@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Write Octave in IPython</title>
+   <link href="http://lekaha.github.io/blog/write-octave-in-ipython/"/>
+   <updated>2016-05-19T00:00:00+09:00</updated>
+   <id>http://lekaha.github.io/blog/write-octave-in-ipython</id>
+   <content type="html">&lt;p&gt;Some of my code writen in Octave, also I would like to put it on the blog. One of easy ways is using ipython notebook with Octave then convert it to markdown content.&lt;/p&gt;
+
+&lt;p&gt;I am not going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;oct2py&lt;/code&gt; that will be a extension to ipython. It’s not my object. I would like to use pure Octave code and see highlight of Octave.&lt;/p&gt;
+
+&lt;h2 id=&quot;octave&quot;&gt;Octave&lt;/h2&gt;
+
+&lt;h3 id=&quot;install&quot;&gt;Install&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Official &lt;a href=&quot;https://www.gnu.org/software/octave/download.html&quot;&gt;download&lt;/a&gt; page.&lt;/li&gt;
+  &lt;li&gt;Or directly download the Octave binary package from &lt;a href=&quot;http://sourceforge.net/projects/octave/files/Octave%20MacOSX%20Binary/2013-12-30%20binary%20installer%20of%20Octave%203.8.0%20for%20OSX%2010.9.1%20%28beta%29/&quot;&gt;Octave Forge&lt;/a&gt; and install&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;configure&quot;&gt;Configure&lt;/h3&gt;
+
+&lt;p&gt;Put the binary path in your PATH enviornment variable.
+In Mac and Octave version 3.8.0:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;echo &quot;export PATH=$PATH:/usr/local/octave/3.8.0/bin&quot; &amp;gt;&amp;gt; ~/.bash_profile
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;octave-kernel&quot;&gt;Octave kernel&lt;/h2&gt;
+
+&lt;p&gt;A Jupyter kernel for Octave - &lt;a href=&quot;https://github.com/Calysto/octave_kernel&quot;&gt;Github&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;install-1&quot;&gt;Install&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install octave_kernel
+python -m octave_kernel.install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The secend command is important!&lt;/p&gt;
+
+&lt;h3 id=&quot;check-it-is-in-the-kenrnel-list&quot;&gt;Check it is in the kenrnel list&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ipython kernelspec list
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;write-a-sample-octave-in-ipython&quot;&gt;Write a sample Octave in IPython&lt;/h2&gt;
+
+&lt;p&gt;If you seen there is a octave in kernel list that means you are successful. Let’s try it!&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ipython console --kernel octave
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;In[1]: fprintf(&#39;Hello octave\n&#39;);
+gnuplot 4.6 patchlevel 4
+Hello octave
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>ex1_machine_learning</title>
+   <link href="http://lekaha.github.io/wiki/ex1_machine_learning/"/>
+   <updated>2016-05-19T00:00:00+09:00</updated>
+   <id>http://lekaha.github.io/wiki/ex1_machine_learning</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;In [1]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Machine Learning Online Class&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  Exercise 1: Linear regression with multiple variables&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  Instructions&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  ------------&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  This file contains code that helps you get started on the&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  linear regression exercise. &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  You will need to complete the following functions in this &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  exericse:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     warmUpExercise.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     plotData.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     gradientDescent.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     computeCost.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     gradientDescentMulti.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     computeCostMulti.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     featureNormalize.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     normalEqn.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  For this part of the exercise, you will need to change some&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  parts of the code below for various experiments (e.g., changing&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  learning rates).&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;In [3]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Initialization&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;%% ================ Part 1: Feature Normalization ================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%% Clear and Close Figures&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;clear&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;close&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;clc&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Loading data ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;%% Load Data&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Print out some data points&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;First 10 examples from the dataset: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; x = [%.0f %.0f], y = %.0f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Scale features and set them to zero mean&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Normalizing Features ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;featureNormalize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Add intercept term to X&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ones&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[H[2J
+Loading data ...
+First 10 examples from the dataset: 
+ x = [2104 3], y = 399900 
+ x = [1600 3], y = 329900 
+ x = [2400 3], y = 369000 
+ x = [1416 2], y = 232000 
+ x = [3000 4], y = 539900 
+ x = [1985 4], y = 299900 
+ x = [1534 3], y = 314900 
+ x = [1427 3], y = 198999 
+ x = [1380 3], y = 212000 
+ x = [1494 3], y = 242500 
+Normalizing Features ...
+warning: operator -: automatic broadcasting operation applied
+warning: quotient: automatic broadcasting operation applied
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;In [4]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% ================ Part 2: Gradient Descent ================&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Instructions: We have provided you with the following starter&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               code that runs gradient descent with a particular&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               learning rate (alpha). &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               Your task is to first make sure that your functions - &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               computeCost and gradientDescent already work with &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               this starter code and support multiple variables.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               After that, try running gradient descent with &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               different values of alpha and see which one gives&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               you the best result.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               Finally, you should complete the code at the end&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               to predict the price of a 1650 sq-ft, 3 br house.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Hint: By using the &#39;hold on&#39; command, you can plot multiple&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%       graphs on the same figure.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Hint: At prediction, make sure you do the same feature normalization.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;In [5]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Running gradient descent ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Choose some alpha value&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;num_iters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Init Theta and Run Gradient Descent &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradientDescentMulti&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_iters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Plot the convergence graph&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;numel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;-b&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;LineWidth&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Number of iterations&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Cost J&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Display gradient descent&#39;s result&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Theta computed from gradient descent: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; %f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Estimate the price of a 1650 sq-ft, 3 br house&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Recall that the first column of X is all-ones. Thus, it does&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% not need to be normalized.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;% You should change this&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% ============================================================&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Predicted price of a 1650 sq-ft, 3 br house &#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;...&lt;/span&gt;
+         &lt;span class=&quot;s1&quot;&gt;&#39;(using gradient descent):\n $%f\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Running gradient descent ...
+Theta computed from gradient descent: 
+ 334302.063993 
+ 100087.116006 
+ 3673.548451 
+
+Predicted price of a 1650 sq-ft, 3 br house (using gradient descent):
+ $165489064.118993
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/2016-05-19-ex1_machine_learning_files/2016-05-19-ex1_machine_learning_3_1.svg&quot; alt=&quot;svg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;In [6]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% ================ Part 3: Normal Equations ================&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Solving with normal equations...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Instructions: The following code computes the closed form &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               solution for linear regression using the normal&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               equations. You should complete the code in &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               normalEqn.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               After doing so, you should complete this code &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               to predict the price of a 1650 sq-ft, 3 br house.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Solving with normal equations...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;In [7]:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Load Data&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;csvread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Add intercept term to X&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ones&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Calculate the parameters from the normal equation&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalEqn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% Display normal equation&#39;s result&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Theta computed from the normal equations: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; %f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+
+&lt;span class=&quot;c1&quot;&gt;% Estimate the price of a 1650 sq-ft, 3 br house&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;% You should change this&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;% ============================================================&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Predicted price of a 1650 sq-ft, 3 br house &#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;...&lt;/span&gt;
+         &lt;span class=&quot;s1&quot;&gt;&#39;(using normal equations):\n $%f\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Theta computed from the normal equations: 
+ 89597.909542 
+ 139.210674 
+ -8738.019112 
+
+Predicted price of a 1650 sq-ft, 3 br house (using normal equations):
+ $293081.464335
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;In [None]:&lt;/strong&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>About Swift resources</title>

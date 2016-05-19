@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      ex1_machine_learning &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">ex1_machine_learning</h1>
+  <time datetime="2016-05-19T00:00:00+09:00" class="post-date">19 May 2016</time>
+  <p><strong>In [1]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%% Machine Learning Online Class</span>
+<span class="c1">%  Exercise 1: Linear regression with multiple variables</span>
+<span class="c1">%</span>
+<span class="c1">%  Instructions</span>
+<span class="c1">%  ------------</span>
+<span class="c1">% </span>
+<span class="c1">%  This file contains code that helps you get started on the</span>
+<span class="c1">%  linear regression exercise. </span>
+<span class="c1">%</span>
+<span class="c1">%  You will need to complete the following functions in this </span>
+<span class="c1">%  exericse:</span>
+<span class="c1">%</span>
+<span class="c1">%     warmUpExercise.m</span>
+<span class="c1">%     plotData.m</span>
+<span class="c1">%     gradientDescent.m</span>
+<span class="c1">%     computeCost.m</span>
+<span class="c1">%     gradientDescentMulti.m</span>
+<span class="c1">%     computeCostMulti.m</span>
+<span class="c1">%     featureNormalize.m</span>
+<span class="c1">%     normalEqn.m</span>
+<span class="c1">%</span>
+<span class="c1">%  For this part of the exercise, you will need to change some</span>
+<span class="c1">%  parts of the code below for various experiments (e.g., changing</span>
+<span class="c1">%  learning rates).</span>
+<span class="c1">%</span></code></pre></figure>
+
+<p><strong>In [3]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%% Initialization</span>
+
+<span class="c1">%% ================ Part 1: Feature Normalization ================</span>
+<span class="c1">%% Clear and Close Figures</span>
+<span class="nb">clear</span> <span class="p">;</span> <span class="nb">close</span> <span class="nb">all</span><span class="p">;</span> <span class="nb">clc</span>
+
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Loading data ...\n'</span><span class="p">);</span>
+
+<span class="c1">%% Load Data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">load</span><span class="p">(</span><span class="s1">'ex1data2.txt'</span><span class="p">);</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">(:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">(:,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">m</span> <span class="o">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+
+<span class="c1">% Print out some data points</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'First 10 examples from the dataset: \n'</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">' x = [%.0f %.0f], y = %.0f \n'</span><span class="p">,</span> <span class="p">[</span><span class="n">X</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">,:)</span> <span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">,:)]</span><span class="o">'</span><span class="p">);</span>
+
+<span class="c1">% Scale features and set them to zero mean</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Normalizing Features ...\n'</span><span class="p">);</span>
+
+<span class="p">[</span><span class="n">X</span> <span class="n">mu</span> <span class="n">sigma</span><span class="p">]</span> <span class="o">=</span> <span class="n">featureNormalize</span><span class="p">(</span><span class="n">X</span><span class="p">);</span>
+
+<span class="c1">% Add intercept term to X</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="nb">ones</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">X</span><span class="p">];</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[H[2J
+Loading data ...
+First 10 examples from the dataset: 
+ x = [2104 3], y = 399900 
+ x = [1600 3], y = 329900 
+ x = [2400 3], y = 369000 
+ x = [1416 2], y = 232000 
+ x = [3000 4], y = 539900 
+ x = [1985 4], y = 299900 
+ x = [1534 3], y = 314900 
+ x = [1427 3], y = 198999 
+ x = [1380 3], y = 212000 
+ x = [1494 3], y = 242500 
+Normalizing Features ...
+warning: operator -: automatic broadcasting operation applied
+warning: quotient: automatic broadcasting operation applied
+</code></pre>
+</div>
+
+<p><strong>In [4]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%% ================ Part 2: Gradient Descent ================</span>
+
+<span class="c1">% ====================== YOUR CODE HERE ======================</span>
+<span class="c1">% Instructions: We have provided you with the following starter</span>
+<span class="c1">%               code that runs gradient descent with a particular</span>
+<span class="c1">%               learning rate (alpha). </span>
+<span class="c1">%</span>
+<span class="c1">%               Your task is to first make sure that your functions - </span>
+<span class="c1">%               computeCost and gradientDescent already work with </span>
+<span class="c1">%               this starter code and support multiple variables.</span>
+<span class="c1">%</span>
+<span class="c1">%               After that, try running gradient descent with </span>
+<span class="c1">%               different values of alpha and see which one gives</span>
+<span class="c1">%               you the best result.</span>
+<span class="c1">%</span>
+<span class="c1">%               Finally, you should complete the code at the end</span>
+<span class="c1">%               to predict the price of a 1650 sq-ft, 3 br house.</span>
+<span class="c1">%</span>
+<span class="c1">% Hint: By using the 'hold on' command, you can plot multiple</span>
+<span class="c1">%       graphs on the same figure.</span>
+<span class="c1">%</span>
+<span class="c1">% Hint: At prediction, make sure you do the same feature normalization.</span>
+<span class="c1">%</span></code></pre></figure>
+
+<p><strong>In [5]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Running gradient descent ...\n'</span><span class="p">);</span>
+
+<span class="c1">% Choose some alpha value</span>
+<span class="nb">alpha</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">;</span>
+<span class="n">num_iters</span> <span class="o">=</span> <span class="mi">400</span><span class="p">;</span>
+
+<span class="c1">% Init Theta and Run Gradient Descent </span>
+<span class="n">theta</span> <span class="o">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">[</span><span class="n">theta</span><span class="p">,</span> <span class="n">J_history</span><span class="p">]</span> <span class="o">=</span> <span class="n">gradientDescentMulti</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="nb">alpha</span><span class="p">,</span> <span class="n">num_iters</span><span class="p">);</span>
+
+<span class="c1">% Plot the convergence graph</span>
+<span class="nb">figure</span><span class="p">;</span>
+<span class="nb">plot</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="nb">numel</span><span class="p">(</span><span class="n">J_history</span><span class="p">),</span> <span class="n">J_history</span><span class="p">,</span> <span class="s1">'-b'</span><span class="p">,</span> <span class="s1">'LineWidth'</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s1">'Number of iterations'</span><span class="p">);</span>
+<span class="nb">ylabel</span><span class="p">(</span><span class="s1">'Cost J'</span><span class="p">);</span>
+
+<span class="c1">% Display gradient descent's result</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Theta computed from gradient descent: \n'</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">' %f \n'</span><span class="p">,</span> <span class="n">theta</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'\n'</span><span class="p">);</span>
+
+<span class="c1">% Estimate the price of a 1650 sq-ft, 3 br house</span>
+<span class="c1">% ====================== YOUR CODE HERE ======================</span>
+<span class="c1">% Recall that the first column of X is all-ones. Thus, it does</span>
+<span class="c1">% not need to be normalized.</span>
+<span class="n">price</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">% You should change this</span>
+<span class="n">price</span> <span class="o">=</span> <span class="n">theta</span><span class="o">'</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">1650</span><span class="p">;</span><span class="mi">3</span><span class="p">];</span>
+
+<span class="c1">% ============================================================</span>
+
+<span class="nb">fprintf</span><span class="p">([</span><span class="s1">'Predicted price of a 1650 sq-ft, 3 br house '</span> <span class="k">...</span>
+         <span class="s1">'(using gradient descent):\n $%f\n'</span><span class="p">],</span> <span class="n">price</span><span class="p">);</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Running gradient descent ...
+Theta computed from gradient descent: 
+ 334302.063993 
+ 100087.116006 
+ 3673.548451 
+
+Predicted price of a 1650 sq-ft, 3 br house (using gradient descent):
+ $165489064.118993
+</code></pre>
+</div>
+
+<p><img src="/img/2016-05-19-ex1_machine_learning_files/2016-05-19-ex1_machine_learning_3_1.svg" alt="svg" /></p>
+
+<p><strong>In [6]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%% ================ Part 3: Normal Equations ================</span>
+
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Solving with normal equations...\n'</span><span class="p">);</span>
+
+<span class="c1">% ====================== YOUR CODE HERE ======================</span>
+<span class="c1">% Instructions: The following code computes the closed form </span>
+<span class="c1">%               solution for linear regression using the normal</span>
+<span class="c1">%               equations. You should complete the code in </span>
+<span class="c1">%               normalEqn.m</span>
+<span class="c1">%</span>
+<span class="c1">%               After doing so, you should complete this code </span>
+<span class="c1">%               to predict the price of a 1650 sq-ft, 3 br house.</span>
+<span class="c1">%</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Solving with normal equations...
+</code></pre>
+</div>
+
+<p><strong>In [7]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-matlab" data-lang="matlab"><span class="c1">%% Load Data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">csvread</span><span class="p">(</span><span class="s1">'ex1data2.txt'</span><span class="p">);</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">(:,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">(:,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">m</span> <span class="o">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+
+<span class="c1">% Add intercept term to X</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="nb">ones</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="n">X</span><span class="p">];</span>
+
+<span class="c1">% Calculate the parameters from the normal equation</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">normalEqn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">);</span>
+
+<span class="c1">% Display normal equation's result</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'Theta computed from the normal equations: \n'</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">' %f \n'</span><span class="p">,</span> <span class="n">theta</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s1">'\n'</span><span class="p">);</span>
+
+
+<span class="c1">% Estimate the price of a 1650 sq-ft, 3 br house</span>
+<span class="c1">% ====================== YOUR CODE HERE ======================</span>
+<span class="n">price</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">% You should change this</span>
+<span class="n">price</span> <span class="o">=</span> <span class="n">theta</span><span class="o">'</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">1650</span><span class="p">;</span><span class="mi">3</span><span class="p">];</span>
+
+<span class="c1">% ============================================================</span>
+
+<span class="nb">fprintf</span><span class="p">([</span><span class="s1">'Predicted price of a 1650 sq-ft, 3 br house '</span> <span class="k">...</span>
+         <span class="s1">'(using normal equations):\n $%f\n'</span><span class="p">],</span> <span class="n">price</span><span class="p">);</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Theta computed from the normal equations: 
+ 89597.909542 
+ 139.210674 
+ -8738.019112 
+
+Predicted price of a 1650 sq-ft, 3 br house (using normal equations):
+ $293081.464335
+</code></pre>
+</div>
+
+<p><strong>In [None]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="/wiki/1_notmnist/">
+          1_notmnist
+          <small><time datetime="2016-04-26T00:00:00+09:00">26 Apr 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-05-20T07:48:57+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>
