@@ -4,13 +4,50 @@
  <title>lekaha's blog</title>
  <link href="http://lekaha.github.io/atom.xml" rel="self"/>
  <link href="http://lekaha.github.io/"/>
- <updated>2016-05-31T11:49:51+09:00</updated>
+ <updated>2016-06-01T15:52:54+09:00</updated>
  <id>http://lekaha.github.io</id>
  <author>
    <name>John Lu</name>
    <email>lekaha@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Preference your bash prompt</title>
+   <link href="http://lekaha.github.io/blog/preference-your-bash-prompt/"/>
+   <updated>2016-06-01T00:00:00+09:00</updated>
+   <id>http://lekaha.github.io/blog/preference-your-bash-prompt</id>
+   <content type="html">&lt;h1 id=&quot;what-is-ps1&quot;&gt;What is PS1&lt;/h1&gt;
+
+&lt;p&gt;PS1 denotes Prompt String 1. It is the one of the prompt available in Linux/UNIX shell. When you open your terminal, it will display the content defined in PS1 variable in your bash prompt&lt;/p&gt;
+
+&lt;h1 id=&quot;preference-it&quot;&gt;Preference it&lt;/h1&gt;
+
+&lt;p&gt;It is a web site for customizing your bash prompt: http://bashrcgenerator.com/&lt;/p&gt;
+
+&lt;p&gt;I would like to display as&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;user]@[hostname] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;directory] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;git user.name] - &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;git current branch]
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;modify-your-bash-profile&quot;&gt;Modify your bash profile&lt;/h1&gt;
+
+&lt;p&gt;Add below script&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;parse_git_branch&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+     git branch 2&amp;gt; /dev/null | sed -e &lt;span class=&quot;s1&quot;&gt;&#39;/^[^*]/d&#39;&lt;/span&gt; -e &lt;span class=&quot;s1&quot;&gt;&#39;s/* \(.*\)/ (\1)/&#39;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+get_git_user_name&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    git config user.name
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PS1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\u&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\h&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33[32m&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]\w\[\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33[38;5;215m&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\$&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;(get_git_user_name)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33[00m&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; -&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33[33m&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]\$&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;(parse_git_branch)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\[\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33[00m&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\]&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &quot;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Dagger2 note</title>
@@ -201,59 +238,59 @@ Hello octave
    <id>http://lekaha.github.io/wiki/ex1_machine_learning</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;In [1]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Machine&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Learning&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Online&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Class&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;Exercise&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Linear&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;regression&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multiple&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;Instructions&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;------------&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;This&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;contains&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;that&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;helps&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;started&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;linear&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;regression&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exercise&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;will&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;need&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;complete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;functions&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;exericse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;warmUpExercise&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;plotData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;gradientDescent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;computeCost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;gradientDescentMulti&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;computeCostMulti&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;featureNormalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;normalEqn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;For&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;part&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exercise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;will&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;need&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;change&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;some&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;parts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;below&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;various&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;experiments&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;changing&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;learning&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Machine Learning Online Class&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  Exercise 1: Linear regression with multiple variables&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  Instructions&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  ------------&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  This file contains code that helps you get started on the&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  linear regression exercise. &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  You will need to complete the following functions in this &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  exericse:&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     warmUpExercise.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     plotData.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     gradientDescent.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     computeCost.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     gradientDescentMulti.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     computeCostMulti.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     featureNormalize.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%     normalEqn.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  For this part of the exercise, you will need to change some&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  parts of the code below for various experiments (e.g., changing&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%  learning rates).&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;strong&gt;In [3]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Initialization&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Initialization&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Part&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Feature&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Normalization&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Clear&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Close&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Figures&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;close&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clc&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%% ================ Part 1: Feature Normalization ================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%% Clear and Close Figures&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;clear&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;close&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;clc&lt;/span&gt;
 
-&lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;Loading data ...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Loading data ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Load&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%% Load Data&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;points&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;First 10 examples from the dataset: &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39; x = [&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%.0&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%.0&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f], y = &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%.0&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;f &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)]&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;);&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;span class=&quot;c1&quot;&gt;% Print out some data points&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;First 10 examples from the dataset: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; x = [%.0f %.0f], y = %.0f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:)]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;% &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Scale features and set them to zero mean&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;fprintf(&#39;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Normalizing&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Features&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;\&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;);&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;span class=&quot;c1&quot;&gt;% Scale features and set them to zero mean&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Normalizing Features ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;[X mu sigma] = featureNormalize(X);&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;featureNormalize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;% &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Add intercept term to X&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;X = [ones(m, 1) X];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;c1&quot;&gt;% Add intercept term to X&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ones&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[H[2J
 Loading data ...
@@ -276,64 +313,64 @@ warning: quotient: automatic broadcasting operation applied
 
 &lt;p&gt;&lt;strong&gt;In [4]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Part&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Gradient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Descent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% ================ Part 2: Gradient Descent ================&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;YOUR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CODE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HERE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Instructions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;We&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;have&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;provided&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;starter&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;that&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;runs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;descent&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;particular&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;learning&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;Your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;make&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sure&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;that&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;functions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;computeCost&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradientDescent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;already&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;work&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;starter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;support&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multiple&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;After&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;that&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;descent&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;different&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;see&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;which&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;one&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gives&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;best&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;Finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;complete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;at&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;predict&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;house&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;By&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;hold on&#39;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;can&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;multiple&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;graphs&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;same&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;At&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prediction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;make&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sure&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;same&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;feature&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Instructions: We have provided you with the following starter&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               code that runs gradient descent with a particular&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               learning rate (alpha). &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               Your task is to first make sure that your functions - &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               computeCost and gradientDescent already work with &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               this starter code and support multiple variables.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               After that, try running gradient descent with &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               different values of alpha and see which one gives&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               you the best result.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               Finally, you should complete the code at the end&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               to predict the price of a 1650 sq-ft, 3 br house.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Hint: By using the &#39;hold on&#39; command, you can plot multiple&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%       graphs on the same figure.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Hint: At prediction, make sure you do the same feature normalization.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;strong&gt;In [5]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;Running gradient descent ...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Running gradient descent ...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Choose&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Choose some alpha value&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alpha&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;num_iters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Init&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Theta&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Run&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Gradient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Descent&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradientDescentMulti&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_iters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Init Theta and Run Gradient Descent &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradientDescentMulti&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_iters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Plot&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;convergence&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;-b&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;LineWidth&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;Number of iterations&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;Cost J&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Plot the convergence graph&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;numel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;J_history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;-b&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;LineWidth&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Number of iterations&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Cost J&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Display&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gradient&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;descent&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;s result&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;fprintf(&#39;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Theta&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;computed&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gradient&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;descent&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;);
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&#39;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;);
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&#39;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;);
+&lt;span class=&quot;c1&quot;&gt;% Display gradient descent&#39;s result&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Theta computed from gradient descent: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; %f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Estimate&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;house&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-%&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;======================&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;YOUR&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CODE&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;HERE&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;======================
-%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Recall&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;that&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;column&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;ones.&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Thus&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;does&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;need&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;be&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normalized.&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;0;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;change&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;[1;1650;3];
+&lt;span class=&quot;c1&quot;&gt;% Estimate the price of a 1650 sq-ft, 3 br house&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Recall that the first column of X is all-ones. Thus, it does&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% not need to be normalized.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;% You should change this&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-%&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;============================================================
+&lt;span class=&quot;c1&quot;&gt;% ============================================================&lt;/span&gt;
 
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;([&#39;&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;Predicted&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;house&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;         &lt;span class=&quot;err&quot;&gt;&#39;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gradient&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;descent&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;):\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$%&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;],&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Predicted price of a 1650 sq-ft, 3 br house &#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;...&lt;/span&gt;
+         &lt;span class=&quot;s1&quot;&gt;&#39;(using gradient descent):\n $%f\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Running gradient descent ...
 Theta computed from gradient descent: 
@@ -350,19 +387,19 @@ Predicted price of a 1650 sq-ft, 3 br house (using gradient descent):
 
 &lt;p&gt;&lt;strong&gt;In [6]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Part&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Normal&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Equations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;================&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% ================ Part 3: Normal Equations ================&lt;/span&gt;
 
-&lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;Solving with normal equations...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Solving with normal equations...\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;YOUR&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CODE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HERE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;======================&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Instructions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;The&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;following&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;computes&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;closed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;form&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;solution&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linear&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;regression&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normal&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;equations&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;complete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;normalEqn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;After&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doing&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;so&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;complete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;code&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;               &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;predict&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;house&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Instructions: The following code computes the closed form &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               solution for linear regression using the normal&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               equations. You should complete the code in &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               normalEqn.m&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               After doing so, you should complete this code &lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%               to predict the price of a 1650 sq-ft, 3 br house.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Solving with normal equations...
 &lt;/code&gt;&lt;/pre&gt;
@@ -370,33 +407,33 @@ Predicted price of a 1650 sq-ft, 3 br house (using gradient descent):
 
 &lt;p&gt;&lt;strong&gt;In [7]:&lt;/strong&gt;&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Load&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Data&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;csvread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-matlab&quot; data-lang=&quot;matlab&quot;&gt;&lt;span class=&quot;c1&quot;&gt;%% Load Data&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;csvread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;ex1data2.txt&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(:,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Add&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;intercept&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;term&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ones&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% Add intercept term to X&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ones&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Calculate&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;parameters&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normal&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;equation&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normalEqn&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;);
+&lt;span class=&quot;c1&quot;&gt;% Calculate the parameters from the normal equation&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalEqn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Display&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normal&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;equation&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&#39;&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;Theta&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;computed&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normal&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;equations&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;);
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&#39;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;);
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;(&#39;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;);
+&lt;span class=&quot;c1&quot;&gt;% Display normal equation&#39;s result&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Theta computed from the normal equations: \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39; %f \n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 
-%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Estimate&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;house&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-%&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;======================&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;YOUR&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;CODE&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;HERE&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;======================
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;0;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;You&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;should&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;change&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;[1;1650;3];
+&lt;span class=&quot;c1&quot;&gt;% Estimate the price of a 1650 sq-ft, 3 br house&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;% ====================== YOUR CODE HERE ======================&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;% You should change this&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;theta&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1650&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-%&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;============================================================
+&lt;span class=&quot;c1&quot;&gt;% ============================================================&lt;/span&gt;
 
-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;([&#39;&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;Predicted&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1650&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sq&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;ft&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;br&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;house&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;&#39;&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
-&lt;/span&gt;         &lt;span class=&quot;err&quot;&gt;&#39;(&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;normal&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;equations&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;):\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$%&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;],&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;nb&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Predicted price of a 1650 sq-ft, 3 br house &#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;...&lt;/span&gt;
+         &lt;span class=&quot;s1&quot;&gt;&#39;(using normal equations):\n $%f\n&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Theta computed from the normal equations: 
  89597.909542 
@@ -408,7 +445,7 @@ Predicted price of a 1650 sq-ft, 3 br house (using normal equations):
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;strong&gt;In [ ]:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;In [None]:&lt;/strong&gt;&lt;/p&gt;
 
 </content>
  </entry>
