@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      08_word2vec &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">08_word2vec</h1>
+  <time datetime="2016-10-04T00:00:00+09:00" class="post-date">04 Oct 2016</time>
+  <p><strong>In [1]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># Inspired by https://www.tensorflow.org/versions/r0.7/tutorials/word2vec/index.html</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">'Agg'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c"># Configuration</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="c"># Dimension of the embedding vector. Two too small to get</span>
+<span class="c"># any meaningful embeddings, but let's make it 2 for simple visualization</span>
+<span class="n">embedding_size</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">num_sampled</span> <span class="o">=</span> <span class="mi">15</span>    <span class="c"># Number of negative examples to sample.</span>
+
+<span class="c"># Sample sentences</span>
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s">"the quick brown fox jumped over the lazy dog"</span><span class="p">,</span>
+            <span class="s">"I love cats and dogs"</span><span class="p">,</span>
+            <span class="s">"we all love cats and dogs"</span><span class="p">,</span>
+            <span class="s">"cats and dogs are great"</span><span class="p">,</span>
+            <span class="s">"sung likes cats"</span><span class="p">,</span>
+            <span class="s">"she loves dogs"</span><span class="p">,</span>
+            <span class="s">"cats can be very independent"</span><span class="p">,</span>
+            <span class="s">"cats are great companions when they want to be"</span><span class="p">,</span>
+            <span class="s">"cats are playful"</span><span class="p">,</span>
+            <span class="s">"cats are natural hunters"</span><span class="p">,</span>
+            <span class="s">"It's raining cats and dogs"</span><span class="p">,</span>
+            <span class="s">"dogs and cats love sung"</span><span class="p">]</span>
+
+<span class="c"># sentences to words and count</span>
+<span class="n">words</span> <span class="o">=</span> <span class="s">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">count</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">()</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">"Word count"</span><span class="p">,</span> <span class="n">count</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c"># Build dictionaries</span>
+<span class="n">rdic</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">count</span><span class="p">]</span> <span class="c">#reverse dic, idx -&gt; word</span>
+<span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rdic</span><span class="p">)}</span> <span class="c">#dic, word -&gt; id</span>
+<span class="n">voc_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+
+<span class="c"># Make indexed word data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Sample data'</span><span class="p">,</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="n">rdic</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]])</span>
+
+<span class="c"># Let's make a training data for window size 1 for simplicity</span>
+<span class="c"># ([the, brown], quick), ([quick, fox], brown), ([brown, jumped], fox), ...</span>
+<span class="n">cbow_pairs</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">cbow_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]],</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]]);</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'Context pairs'</span><span class="p">,</span> <span class="n">cbow_pairs</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
+
+<span class="c"># Let's make skip-gram pairs</span>
+<span class="c"># (quick, the), (quick, brown), (brown, quick), (brown, fox), ...</span>
+<span class="n">skip_gram_pairs</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cbow_pairs</span><span class="p">:</span>
+    <span class="n">skip_gram_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">skip_gram_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'skip-gram pairs'</span><span class="p">,</span> <span class="n">skip_gram_pairs</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">generate_batch</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">skip_gram_pairs</span><span class="p">)</span>
+    <span class="n">x_data</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">y_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">skip_gram_pairs</span><span class="p">)),</span> <span class="n">size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">x_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">skip_gram_pairs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>  <span class="c"># n dim</span>
+        <span class="n">y_data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">skip_gram_pairs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span>  <span class="c"># n, 1 dim</span>
+    <span class="k">return</span> <span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span>
+
+<span class="c"># generate_batch test</span>
+<span class="k">print</span> <span class="p">(</span><span class="s">'Batches (x, y)'</span><span class="p">,</span> <span class="n">generate_batch</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c"># Input data</span>
+<span class="n">train_inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">])</span>
+<span class="c"># need to shape [batch_size, 1] for nn.nce_loss</span>
+<span class="n">train_labels</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="c"># Ops and variables pinned to the CPU because of missing GPU implementation</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s">'/cpu:0'</span><span class="p">):</span>
+    <span class="c"># Look up embeddings for inputs.</span>
+    <span class="n">embeddings</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">voc_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">],</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+    <span class="n">embed</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">embedding_lookup</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">train_inputs</span><span class="p">)</span> <span class="c"># lookup table</span>
+
+<span class="c"># Construct the variables for the NCE loss</span>
+<span class="n">nce_weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">([</span><span class="n">voc_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">],</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+<span class="n">nce_biases</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">voc_size</span><span class="p">]))</span>
+
+<span class="c"># Compute the average NCE loss for the batch.</span>
+<span class="c"># This does the magic:</span>
+<span class="c">#   tf.nn.nce_loss(weights, biases, inputs, labels, num_sampled, num_classes ...)</span>
+<span class="c"># It automatically draws negative samples when we evaluate the loss.</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
+  <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">nce_loss</span><span class="p">(</span><span class="n">nce_weights</span><span class="p">,</span> <span class="n">nce_biases</span><span class="p">,</span> <span class="n">embed</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span>
+                 <span class="n">num_sampled</span><span class="p">,</span> <span class="n">voc_size</span><span class="p">))</span>
+
+<span class="c"># Use the adam optimizer</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="mf">1e-1</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+<span class="c"># Launch the graph in a session</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c"># Initializing all variables</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">batch_inputs</span><span class="p">,</span> <span class="n">batch_labels</span> <span class="o">=</span> <span class="n">generate_batch</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">loss_val</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">train_op</span><span class="p">,</span> <span class="n">loss</span><span class="p">],</span>
+                <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">train_inputs</span><span class="p">:</span> <span class="n">batch_inputs</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">:</span> <span class="n">batch_labels</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="k">print</span><span class="p">(</span><span class="s">"Loss at "</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">loss_val</span><span class="p">)</span> <span class="c"># Report the loss</span>
+
+    <span class="c"># Final embeddings are ready for you to use. Need to normalize for practical use</span>
+    <span class="n">trained_embeddings</span> <span class="o">=</span> <span class="n">embeddings</span><span class="o">.</span><span class="nb">eval</span><span class="p">()</span>
+
+<span class="c"># Show word2vec if dim is 2</span>
+<span class="k">if</span> <span class="n">trained_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">rdic</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="c"># Show top 10 words</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trained_embeddings</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">textcoords</span><span class="o">=</span><span class="s">'offset points'</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s">'right'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s">'bottom'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">"word2vec.png"</span><span class="p">)</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>('Word count', [('cats', 10), ('dogs', 6), ('and', 5), ('are', 4), ('love', 3)])
+('Sample data', [8, 33, 24, 20, 17, 12, 8, 25, 30, 26], ['the', 'quick', 'brown', 'fox', 'jumped', 'over', 'the', 'lazy', 'dog', 'I'])
+('Context pairs', [[[8, 24], 33], [[33, 20], 24], [[24, 17], 20], [[20, 12], 17], [[17, 8], 12], [[12, 25], 8], [[8, 30], 25], [[25, 26], 30], [[30, 4], 26], [[26, 0], 4]])
+('skip-gram pairs', [[33, 8], [33, 24], [24, 33], [24, 20], [20, 24]])
+('Batches (x, y)', ([1, 27, 31], [[0], [0], [32]]))
+('Loss at ', 0, 16.735144)
+('Loss at ', 10, 10.094729)
+('Loss at ', 20, 4.8836751)
+('Loss at ', 30, 4.0771756)
+('Loss at ', 40, 3.6998763)
+('Loss at ', 50, 3.5778923)
+('Loss at ', 60, 3.6107972)
+('Loss at ', 70, 3.8399482)
+('Loss at ', 80, 3.258163)
+('Loss at ', 90, 3.4325538)
+
+
+/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/matplotlib/collections.py:548: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if self._edgecolors == 'face':
+</code></pre>
+</div>
+
+<p><strong>In [2]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">'word2vec.png'</span><span class="p">)</span> </code></pre></figure>
+
+<p><img src="/img/2016-10-04-08_word2vec_files/2016-10-04-08_word2vec_1_0.png" alt="png" /></p>
+
+<p><strong>In [ ]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/10_save_restore_net/">
+          10_save_restore_net
+          <small><time datetime="2016-10-05T00:00:00+09:00">05 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/09_tensorboard/">
+          09_tensorboard
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/07_lstm/">
+          07_lstm
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      07_lstm &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">07_lstm</h1>
+  <time datetime="2016-10-04T00:00:00+09:00" class="post-date">04 Oct 2016</time>
+  <p><strong>In [1]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'../'</span><span class="p">)</span></code></pre></figure>
+
+<p><strong>In [5]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># Inspired by </span>
+<span class="c"># https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/3%20-%20Neural%20Networks/recurrent_network.py</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">input_data</span>
+
+<span class="c"># configuration</span>
+<span class="c">#                        O * W + b -&gt; 10 labels for each image, O[? 28], W[28 10], B[10]</span>
+<span class="c">#                       ^ (O: output 28 vec from 28 vec input)</span>
+<span class="c">#                       |</span>
+<span class="c">#      +-+  +-+       +--+</span>
+<span class="c">#      |1|-&gt;|2|-&gt; ... |28| time_step_size = 28</span>
+<span class="c">#      +-+  +-+       +--+</span>
+<span class="c">#       ^    ^    ...  ^</span>
+<span class="c">#       |    |         |</span>
+<span class="c"># img1:[28] [28]  ... [28]</span>
+<span class="c"># img2:[28] [28]  ... [28]</span>
+<span class="c"># img3:[28] [28]  ... [28]</span>
+<span class="c"># ...</span>
+<span class="c"># img128 or img256 (batch_size or test_size 256)</span>
+<span class="c">#      each input size = input_vec_size=lstm_size=28</span>
+
+<span class="c"># configuration variables</span>
+<span class="n">input_vec_size</span> <span class="o">=</span> <span class="n">lstm_size</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">time_step_size</span> <span class="o">=</span> <span class="mi">28</span>
+
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">test_size</span> <span class="o">=</span> <span class="mi">256</span>
+
+<span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">lstm_size</span><span class="p">):</span>
+    <span class="c"># X, input shape: (batch_size, time_step_size, input_vec_size)</span>
+    <span class="n">XT</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c"># permute time_step_size and batch_size</span>
+    <span class="c"># XT shape: (time_step_size, batch_size, input_vec_size)</span>
+    <span class="n">XR</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">XT</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lstm_size</span><span class="p">])</span> <span class="c"># each row has input for each lstm cell (lstm_size=input_vec_size)</span>
+    <span class="c"># XR shape: (time_step_size * batch_size, input_vec_size)</span>
+    <span class="n">X_split</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_step_size</span><span class="p">,</span> <span class="n">XR</span><span class="p">)</span> <span class="c"># split them to time_step_size (28 arrays)</span>
+    <span class="c"># Each array shape: (batch_size, input_vec_size)</span>
+
+    <span class="c"># Make lstm with lstm_size (each input vector size)</span>
+    <span class="n">lstm</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">rnn_cell</span><span class="o">.</span><span class="n">BasicLSTMCell</span><span class="p">(</span><span class="n">lstm_size</span><span class="p">,</span> <span class="n">forget_bias</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c"># Get lstm cell output, time_step_size (28) arrays with lstm_size output: (batch_size, lstm_size)</span>
+    <span class="n">outputs</span><span class="p">,</span> <span class="n">_states</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">lstm</span><span class="p">,</span> <span class="n">X_split</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c"># Linear activation</span>
+    <span class="c"># Get the last output</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">B</span><span class="p">,</span> <span class="n">lstm</span><span class="o">.</span><span class="n">state_size</span> <span class="c"># State size to initialize the stat</span>
+
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">"MNIST_data/"</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">trX</span><span class="p">,</span> <span class="n">trY</span><span class="p">,</span> <span class="n">teX</span><span class="p">,</span> <span class="n">teY</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">labels</span>
+<span class="n">trX</span> <span class="o">=</span> <span class="n">trX</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">teX</span> <span class="o">=</span> <span class="n">teX</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="c"># get lstm_size and output 10 labels</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="n">lstm_size</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+
+<span class="n">py_x</span><span class="p">,</span> <span class="n">state_size</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">lstm_size</span><span class="p">)</span>
+
+<span class="n">cost</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">RMSPropOptimizer</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>
+<span class="n">predict_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c"># Launch the graph in a session</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c"># you need to initialize all variables</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)):</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">trX</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">trY</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]})</span>
+
+        <span class="n">test_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">teX</span><span class="p">))</span>  <span class="c"># Get A Test Batch</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">test_indices</span><span class="p">)</span>
+        <span class="n">test_indices</span> <span class="o">=</span> <span class="n">test_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">test_size</span><span class="p">]</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">teY</span><span class="p">[</span><span class="n">test_indices</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span>
+                         <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">predict_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">teX</span><span class="p">[</span><span class="n">test_indices</span><span class="p">],</span>
+                                                         <span class="n">Y</span><span class="p">:</span> <span class="n">teY</span><span class="p">[</span><span class="n">test_indices</span><span class="p">]})))</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>('Extracting', 'MNIST_data/train-images-idx3-ubyte.gz')
+('Extracting', 'MNIST_data/train-labels-idx1-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-images-idx3-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-labels-idx1-ubyte.gz')
+(0, 0.62890625)
+(1, 0.77734375)
+(2, 0.84375)
+(3, 0.84375)
+(4, 0.9296875)
+(5, 0.93359375)
+(6, 0.9453125)
+(7, 0.93359375)
+(8, 0.96484375)
+(9, 0.93359375)
+</code></pre>
+</div>
+
+<p><strong>In [ ]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/10_save_restore_net/">
+          10_save_restore_net
+          <small><time datetime="2016-10-05T00:00:00+09:00">05 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/09_tensorboard/">
+          09_tensorboard
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/08_word2vec/">
+          08_word2vec
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>

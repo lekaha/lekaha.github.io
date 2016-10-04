@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      02_logistic_regression &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">02_logistic_regression</h1>
+  <time datetime="2016-10-04T00:00:00+09:00" class="post-date">04 Oct 2016</time>
+  <p><strong>In [3]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'../'</span><span class="p">)</span></code></pre></figure>
+
+<p><strong>In [4]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">input_data</span>
+
+
+<span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+
+
+<span class="c"># notice we use the same model as linear regression, </span>
+<span class="c"># this is because there is a baked in cost function which performs softmax and cross entropy</span>
+<span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">"MNIST_data/"</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">trX</span><span class="p">,</span> <span class="n">trY</span><span class="p">,</span> <span class="n">teX</span><span class="p">,</span> <span class="n">teY</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">labels</span>
+
+<span class="c"># create symbolic variables</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span> 
+<span class="n">Y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="c"># like in linear regression, we need a shared variable weight matrix for logistic regression</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="mi">784</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span> 
+
+<span class="n">py_x</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+<span class="c"># compute mean cross entropy (softmax is applied internally)</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span> 
+
+<span class="c"># construct optimizer</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span> 
+
+<span class="c"># at predict time, evaluate the argmax of the logistic regression</span>
+<span class="n">predict_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> 
+
+<span class="c"># Launch the graph in a session</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c"># you need to initialize all variables</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">),</span> <span class="mi">128</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">)):</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">trX</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">trY</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]})</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">teY</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span>
+                         <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">predict_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">teX</span><span class="p">})))</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>('Succesfully downloaded', 'train-images-idx3-ubyte.gz', 9912422, 'bytes.')
+('Extracting', 'MNIST_data/train-images-idx3-ubyte.gz')
+('Succesfully downloaded', 'train-labels-idx1-ubyte.gz', 28881, 'bytes.')
+('Extracting', 'MNIST_data/train-labels-idx1-ubyte.gz')
+('Succesfully downloaded', 't10k-images-idx3-ubyte.gz', 1648877, 'bytes.')
+('Extracting', 'MNIST_data/t10k-images-idx3-ubyte.gz')
+('Succesfully downloaded', 't10k-labels-idx1-ubyte.gz', 4542, 'bytes.')
+('Extracting', 'MNIST_data/t10k-labels-idx1-ubyte.gz')
+(0, 0.88490000000000002)
+(1, 0.89670000000000005)
+(2, 0.90359999999999996)
+(3, 0.90659999999999996)
+(4, 0.90990000000000004)
+(5, 0.91049999999999998)
+(6, 0.91139999999999999)
+(7, 0.91359999999999997)
+(8, 0.91469999999999996)
+(9, 0.91520000000000001)
+(10, 0.91610000000000003)
+(11, 0.91690000000000005)
+(12, 0.91769999999999996)
+(13, 0.91779999999999995)
+(14, 0.91800000000000004)
+(15, 0.91830000000000001)
+(16, 0.91869999999999996)
+(17, 0.91890000000000005)
+(18, 0.9194)
+(19, 0.91949999999999998)
+(20, 0.91979999999999995)
+(21, 0.92010000000000003)
+(22, 0.9204)
+(23, 0.92079999999999995)
+(24, 0.92069999999999996)
+(25, 0.92059999999999997)
+(26, 0.92090000000000005)
+(27, 0.92079999999999995)
+(28, 0.92090000000000005)
+(29, 0.92110000000000003)
+(30, 0.92110000000000003)
+(31, 0.92130000000000001)
+(32, 0.92130000000000001)
+(33, 0.92130000000000001)
+(34, 0.92159999999999997)
+(35, 0.92169999999999996)
+(36, 0.92169999999999996)
+(37, 0.92159999999999997)
+(38, 0.92169999999999996)
+(39, 0.92190000000000005)
+(40, 0.92179999999999995)
+(41, 0.92190000000000005)
+(42, 0.92179999999999995)
+(43, 0.92210000000000003)
+(44, 0.92220000000000002)
+(45, 0.92200000000000004)
+(46, 0.92210000000000003)
+(47, 0.92179999999999995)
+(48, 0.92179999999999995)
+(49, 0.92179999999999995)
+(50, 0.92190000000000005)
+(51, 0.92190000000000005)
+(52, 0.92200000000000004)
+(53, 0.9224)
+(54, 0.92269999999999996)
+(55, 0.92249999999999999)
+(56, 0.92269999999999996)
+(57, 0.92279999999999995)
+(58, 0.92279999999999995)
+(59, 0.92279999999999995)
+(60, 0.92279999999999995)
+(61, 0.92269999999999996)
+(62, 0.92279999999999995)
+(63, 0.92300000000000004)
+(64, 0.92300000000000004)
+(65, 0.92320000000000002)
+(66, 0.92320000000000002)
+(67, 0.9234)
+(68, 0.9234)
+(69, 0.92330000000000001)
+(70, 0.9234)
+(71, 0.9234)
+(72, 0.92349999999999999)
+(73, 0.92330000000000001)
+(74, 0.9234)
+(75, 0.9234)
+(76, 0.92359999999999998)
+(77, 0.92359999999999998)
+(78, 0.92349999999999999)
+(79, 0.92349999999999999)
+(80, 0.92349999999999999)
+(81, 0.92359999999999998)
+(82, 0.92369999999999997)
+(83, 0.92369999999999997)
+(84, 0.92369999999999997)
+(85, 0.92369999999999997)
+(86, 0.92359999999999998)
+(87, 0.92359999999999998)
+(88, 0.92359999999999998)
+(89, 0.92369999999999997)
+(90, 0.92379999999999995)
+(91, 0.92369999999999997)
+(92, 0.92379999999999995)
+(93, 0.92390000000000005)
+(94, 0.92390000000000005)
+(95, 0.92400000000000004)
+(96, 0.92379999999999995)
+(97, 0.92369999999999997)
+(98, 0.92369999999999997)
+(99, 0.92359999999999998)
+</code></pre>
+</div>
+
+<p><strong>In [ ]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/10_save_restore_net/">
+          10_save_restore_net
+          <small><time datetime="2016-10-05T00:00:00+09:00">05 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/09_tensorboard/">
+          09_tensorboard
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/08_word2vec/">
+          08_word2vec
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>

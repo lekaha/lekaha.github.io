@@ -52,7 +52,7 @@
 
 <p>I would like to display as</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>user]@[hostname] <span class="o">[</span>directory] <span class="o">[</span>git user.name] - <span class="o">[</span>git current branch]
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">[</span>user]@[hostname] <span class="o">[</span>directory] <span class="o">[</span>git user.name] - <span class="o">[</span>git current branch]
 
 </code></pre>
 </div>
@@ -61,7 +61,7 @@
 
 <p>Add below script</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>parse_git_branch<span class="o">()</span> <span class="o">{</span>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>parse_git_branch<span class="o">()</span> <span class="o">{</span>
      git branch 2&gt; /dev/null | sed -e <span class="s1">'/^[^*]/d'</span> -e <span class="s1">'s/* \(.*\)/ (\1)/'</span>
 <span class="o">}</span>
 get_git_user_name<span class="o">()</span> <span class="o">{</span>
@@ -71,10 +71,6 @@ get_git_user_name<span class="o">()</span> <span class="o">{</span>
 
 </code></pre>
 </div>
-
-<p>Result</p>
-
-<p><img src="/img/2016-06-01-preference_your_bash_prompt_files/bash.png" alt="png" /></p>
 
 </article>
 
@@ -88,21 +84,7 @@ get_git_user_name<span class="o">()</span> <span class="o">{</span>
   <ul class="related-posts">
     
     
-      <li>
-        <a href="/blog/dagger2-note/">
-          Dagger2 note
-          <small><time datetime="2016-05-31T00:00:00+09:00">31 May 2016</time></small>
-        </a>
-      </li>
     
-    
-    
-      <li>
-        <a href="/blog/write-octave-in-ipython/">
-          Write Octave in IPython
-          <small><time datetime="2016-05-19T00:00:00+09:00">19 May 2016</time></small>
-        </a>
-      </li>
     
     
     
@@ -134,7 +116,7 @@ get_git_user_name<span class="o">()</span> <span class="o">{</span>
 
       <footer class="footer">
         <small>
-          &copy; <time datetime="2016-06-01T16:18:19+09:00">2016</time>. All rights reserved.
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
         </small>
       </footer>
     </div>

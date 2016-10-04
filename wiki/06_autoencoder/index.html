@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      06_autoencoder &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">06_autoencoder</h1>
+  <time datetime="2016-10-04T00:00:00+09:00" class="post-date">04 Oct 2016</time>
+  <p><strong>In [1]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'../'</span><span class="p">)</span></code></pre></figure>
+
+<p><strong>In [2]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">input_data</span>
+
+<span class="n">mnist_width</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">n_visible</span> <span class="o">=</span> <span class="n">mnist_width</span> <span class="o">*</span> <span class="n">mnist_width</span>
+<span class="n">n_hidden</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">corruption_level</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+<span class="c"># create node for input data</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_visible</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s">'X'</span><span class="p">)</span>
+
+<span class="c"># create node for corruption mask</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_visible</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s">'mask'</span><span class="p">)</span>
+
+<span class="c"># create nodes for hidden variables</span>
+<span class="n">W_init_max</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">6.</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_visible</span> <span class="o">+</span> <span class="n">n_hidden</span><span class="p">))</span>
+<span class="n">W_init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">n_visible</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">],</span>
+                           <span class="n">minval</span><span class="o">=-</span><span class="n">W_init_max</span><span class="p">,</span>
+                           <span class="n">maxval</span><span class="o">=</span><span class="n">W_init_max</span><span class="p">)</span>
+
+<span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">W_init</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'W'</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_hidden</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s">'b'</span><span class="p">)</span>
+
+<span class="n">W_prime</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>  <span class="c"># tied weights between encoder and decoder</span>
+<span class="n">b_prime</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_visible</span><span class="p">]),</span> <span class="n">name</span><span class="o">=</span><span class="s">'b_prime'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">W_prime</span><span class="p">,</span> <span class="n">b_prime</span><span class="p">):</span>
+    <span class="n">tilde_X</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">X</span>  <span class="c"># corrupted X</span>
+
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">tilde_X</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>  <span class="c"># hidden state</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">W_prime</span><span class="p">)</span> <span class="o">+</span> <span class="n">b_prime</span><span class="p">)</span>  <span class="c"># reconstructed input</span>
+    <span class="k">return</span> <span class="n">Z</span>
+
+<span class="c"># build model graph</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">W_prime</span><span class="p">,</span> <span class="n">b_prime</span><span class="p">)</span>
+
+<span class="c"># create cost function</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="nb">pow</span><span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">Z</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c"># minimize squared error</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>  <span class="c"># construct an optimizer</span>
+
+<span class="c"># load MNIST data</span>
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">"MNIST_data/"</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">trX</span><span class="p">,</span> <span class="n">trY</span><span class="p">,</span> <span class="n">teX</span><span class="p">,</span> <span class="n">teY</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">labels</span>
+
+<span class="c"># Launch the graph in a session</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c"># you need to initialize all variables</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">),</span> <span class="mi">128</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">)):</span>
+            <span class="n">input_</span> <span class="o">=</span> <span class="n">trX</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            <span class="n">mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corruption_level</span><span class="p">,</span> <span class="n">input_</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">input_</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">mask_np</span><span class="p">})</span>
+
+        <span class="n">mask_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">corruption_level</span><span class="p">,</span> <span class="n">teX</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">teX</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">mask_np</span><span class="p">}))</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>('Extracting', 'MNIST_data/train-images-idx3-ubyte.gz')
+('Extracting', 'MNIST_data/train-labels-idx1-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-images-idx3-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-labels-idx1-ubyte.gz')
+(0, 110793.03)
+(1, 93502.625)
+(2, 85263.117)
+(3, 81706.906)
+(4, 77591.875)
+(5, 75157.766)
+(6, 72022.695)
+(7, 70865.258)
+(8, 69643.688)
+(9, 68343.203)
+</code></pre>
+</div>
+
+<p><strong>In [ ]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/10_save_restore_net/">
+          10_save_restore_net
+          <small><time datetime="2016-10-05T00:00:00+09:00">05 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/09_tensorboard/">
+          09_tensorboard
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/08_word2vec/">
+          08_word2vec
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>

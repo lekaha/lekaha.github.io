@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    
+      10_save_restore_net &middot; lekaha's blog
+    
+  </title>
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+  <link rel="alternate" type="application/atom+xml" title="lekaha's blog" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="container content">
+      <header class="masthead">
+        <h3 class="masthead-title">
+          <a href="/" title="Home">lekaha's blog</a>
+          <small>Change the world</small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/wiki">Wiki</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/blog">Blog</a></small>
+          
+            &nbsp;&nbsp;&nbsp;
+            <small><a href="/atom.xml">Feed</a></small>
+          
+        </h3>
+      </header>
+
+      <main>
+        <article class="post">
+  <h1 class="post-title">10_save_restore_net</h1>
+  <time datetime="2016-10-05T00:00:00+09:00" class="post-date">05 Oct 2016</time>
+  <p><strong>In [1]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'../'</span><span class="p">)</span></code></pre></figure>
+
+<p><strong>In [2]:</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">input_data</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c"># This shows how to save/restore your model (trained variables).</span>
+<span class="c"># To see how it works, please stop this program during training and resart.</span>
+<span class="c"># This network is the same as 3_net.py</span>
+
+<span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+
+<span class="c"># this network is the same as the previous one except with an extra hidden layer + dropout</span>
+<span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w_h</span><span class="p">,</span> <span class="n">w_h2</span><span class="p">,</span> <span class="n">w_o</span><span class="p">,</span> <span class="n">p_keep_input</span><span class="p">,</span> <span class="n">p_keep_hidden</span><span class="p">):</span> 
+    <span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">p_keep_input</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w_h</span><span class="p">))</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p_keep_hidden</span><span class="p">)</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w_h2</span><span class="p">))</span>
+
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">p_keep_hidden</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">w_o</span><span class="p">)</span>
+
+
+<span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s">"MNIST_data/"</span><span class="p">,</span> <span class="n">one_hot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">trX</span><span class="p">,</span> <span class="n">trY</span><span class="p">,</span> <span class="n">teX</span><span class="p">,</span> <span class="n">teY</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">images</span><span class="p">,</span> <span class="n">mnist</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">labels</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">w_h</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="mi">784</span><span class="p">,</span> <span class="mi">625</span><span class="p">])</span>
+<span class="n">w_h2</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="mi">625</span><span class="p">,</span> <span class="mi">625</span><span class="p">])</span>
+<span class="n">w_o</span> <span class="o">=</span> <span class="n">init_weights</span><span class="p">([</span><span class="mi">625</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">p_keep_input</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">)</span>
+<span class="n">p_keep_hidden</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="s">"float"</span><span class="p">)</span>
+<span class="n">py_x</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">w_h</span><span class="p">,</span> <span class="n">w_h2</span><span class="p">,</span> <span class="n">w_o</span><span class="p">,</span> <span class="n">p_keep_input</span><span class="p">,</span> <span class="n">p_keep_hidden</span><span class="p">)</span>
+
+<span class="n">cost</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">RMSPropOptimizer</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cost</span><span class="p">)</span>
+<span class="n">predict_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">py_x</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">ckpt_dir</span> <span class="o">=</span> <span class="s">"./ckpt_dir"</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">)</span>
+
+<span class="n">global_step</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'global_step'</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># Call this after declaring all tf.Variables.</span>
+<span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+
+<span class="c"># This variable won't be stored, since it is declared after tf.train.Saver()</span>
+<span class="n">non_storable_variable</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="mi">777</span><span class="p">)</span>
+
+<span class="c"># Launch the graph in a session</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c"># you need to initialize all variables</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">initialize_all_variables</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="n">ckpt</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">get_checkpoint_state</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ckpt</span> <span class="ow">and</span> <span class="n">ckpt</span><span class="o">.</span><span class="n">model_checkpoint_path</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">ckpt</span><span class="o">.</span><span class="n">model_checkpoint_path</span><span class="p">)</span>
+        <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">ckpt</span><span class="o">.</span><span class="n">model_checkpoint_path</span><span class="p">)</span> <span class="c"># restore all variables</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">global_step</span><span class="o">.</span><span class="nb">eval</span><span class="p">()</span> <span class="c"># get last global_step</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Start from:"</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">),</span> <span class="mi">128</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trX</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">)):</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">trX</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">Y</span><span class="p">:</span> <span class="n">trY</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span>
+                                          <span class="n">p_keep_input</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">p_keep_hidden</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
+
+        <span class="n">global_step</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="nb">eval</span><span class="p">()</span> <span class="c"># set and update(eval) global_step with index, i</span>
+        <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">ckpt_dir</span> <span class="o">+</span> <span class="s">"/model.ckpt"</span><span class="p">,</span> <span class="n">global_step</span><span class="o">=</span><span class="n">global_step</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">teY</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span>
+                         <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">predict_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">teX</span><span class="p">,</span> <span class="n">Y</span><span class="p">:</span> <span class="n">teY</span><span class="p">,</span>
+                                                         <span class="n">p_keep_input</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                                                         <span class="n">p_keep_hidden</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})))</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>('Extracting', 'MNIST_data/train-images-idx3-ubyte.gz')
+
+
+/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/gzip.py:275: VisibleDeprecationWarning: converting an array with ndim &gt; 0 to an index will result in an error in the future
+  chunk = self.extrabuf[offset: offset + size]
+../input_data.py:42: VisibleDeprecationWarning: converting an array with ndim &gt; 0 to an index will result in an error in the future
+  data = data.reshape(num_images, rows, cols, 1)
+
+
+('Extracting', 'MNIST_data/train-labels-idx1-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-images-idx3-ubyte.gz')
+('Extracting', 'MNIST_data/t10k-labels-idx1-ubyte.gz')
+('Start from:', 0)
+(0, 0.93779999999999997)
+(1, 0.96450000000000002)
+(2, 0.96830000000000005)
+(3, 0.97389999999999999)
+(4, 0.97399999999999998)
+(5, 0.97589999999999999)
+(6, 0.97599999999999998)
+(7, 0.97950000000000004)
+(8, 0.98040000000000005)
+(9, 0.98040000000000005)
+(10, 0.9798)
+(11, 0.97960000000000003)
+(12, 0.98040000000000005)
+(13, 0.98180000000000001)
+(14, 0.97970000000000002)
+(15, 0.9819)
+(16, 0.98080000000000001)
+(17, 0.98280000000000001)
+(18, 0.98099999999999998)
+(19, 0.98089999999999999)
+(20, 0.98229999999999995)
+(21, 0.98229999999999995)
+(22, 0.98360000000000003)
+(23, 0.98209999999999997)
+(24, 0.98240000000000005)
+(25, 0.98280000000000001)
+(26, 0.98299999999999998)
+(27, 0.9829)
+(28, 0.98380000000000001)
+(29, 0.98360000000000003)
+(30, 0.98380000000000001)
+(31, 0.98299999999999998)
+(32, 0.98350000000000004)
+(33, 0.98350000000000004)
+(34, 0.98340000000000005)
+(35, 0.98519999999999996)
+(36, 0.9819)
+(37, 0.98370000000000002)
+(38, 0.9829)
+(39, 0.9839)
+(40, 0.98250000000000004)
+(41, 0.98360000000000003)
+(42, 0.98509999999999998)
+(43, 0.98480000000000001)
+(44, 0.98429999999999995)
+(45, 0.98309999999999997)
+(46, 0.98250000000000004)
+(47, 0.98460000000000003)
+(48, 0.98360000000000003)
+(49, 0.98519999999999996)
+(50, 0.98360000000000003)
+(51, 0.98440000000000005)
+(52, 0.98470000000000002)
+(53, 0.9849)
+(54, 0.98419999999999996)
+(55, 0.98450000000000004)
+(56, 0.98519999999999996)
+(57, 0.98409999999999997)
+(58, 0.98480000000000001)
+(59, 0.98460000000000003)
+(60, 0.98499999999999999)
+(61, 0.98550000000000004)
+(62, 0.98529999999999995)
+(63, 0.98529999999999995)
+(64, 0.98340000000000005)
+(65, 0.98440000000000005)
+(66, 0.98429999999999995)
+(67, 0.98540000000000005)
+(68, 0.98450000000000004)
+(69, 0.98460000000000003)
+(70, 0.98380000000000001)
+(71, 0.98360000000000003)
+(72, 0.98470000000000002)
+(73, 0.98380000000000001)
+(74, 0.98480000000000001)
+(75, 0.98440000000000005)
+(76, 0.98470000000000002)
+(77, 0.9849)
+(78, 0.98570000000000002)
+(79, 0.98429999999999995)
+(80, 0.98509999999999998)
+(81, 0.98540000000000005)
+(82, 0.98440000000000005)
+(83, 0.98609999999999998)
+(84, 0.98419999999999996)
+(85, 0.98360000000000003)
+(86, 0.98380000000000001)
+(87, 0.98519999999999996)
+(88, 0.98499999999999999)
+(89, 0.9849)
+(90, 0.98519999999999996)
+(91, 0.98629999999999995)
+(92, 0.98499999999999999)
+(93, 0.98519999999999996)
+(94, 0.98519999999999996)
+(95, 0.98550000000000004)
+(96, 0.98519999999999996)
+(97, 0.98540000000000005)
+(98, 0.98480000000000001)
+(99, 0.98619999999999997)
+</code></pre>
+</div>
+
+<p><strong>In [ ]:</strong></p>
+
+
+</article>
+
+
+
+<aside class="related">
+  <h3>Related posts</h3>
+  <ul class="related-posts">
+    
+    
+      <li>
+        <a href="/wiki/09_tensorboard/">
+          09_tensorboard
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/08_word2vec/">
+          08_word2vec
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="/wiki/07_lstm/">
+          07_lstm
+          <small><time datetime="2016-10-04T00:00:00+09:00">04 Oct 2016</time></small>
+        </a>
+      </li>
+    
+    
+  </ul>
+</aside>
+
+
+
+
+      </main>
+
+      <footer class="footer">
+        <small>
+          &copy; <time datetime="2016-10-05T00:09:07+09:00">2016</time>. All rights reserved.
+        </small>
+      </footer>
+    </div>
+
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76767249-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    
+  </body>
+</html>
